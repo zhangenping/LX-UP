@@ -1,0 +1,28 @@
+<view class="login-container">
+  <!-- 顶部背景 -->
+  <view class="login-header">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <text class="app-name">学习平台</text>
+    <text class="app-desc">请登录以继续使用</text>
+  </view>
+
+  <!-- 登录方式选择 -->
+  <view class="login-methods">
+    <view class="method-card wechat-login" bindtap="handleWechatLogin">
+      <image class="method-icon" src="/images/wechat-icon.png"></image>
+      <text class="method-text">微信一键登录</text>
+      <text class="method-desc">快速安全，推荐使用</text>
+    </view>
+
+    <!-- 其他登录方式可以在这里扩展 -->
+  </view>
+
+  <!-- 协议说明 -->
+  <view class="agreement">
+    <checkbox checked="{{agreementChecked}}" bindchange="onAgreementChange" />
+    <text class="agreement-text">我已阅读并同意</text>
+    <text class="agreement-link" bindtap="showUserAgreement">《用户协议》</text>
+    <text class="agreement-text">和</text>
+    <text class="agreement-link" bindtap="showPrivacyPolicy">《隐私政策》</text>
+  </view>
+</view>

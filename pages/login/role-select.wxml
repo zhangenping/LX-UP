@@ -1,0 +1,71 @@
+<view class="role-select-container">
+  <!-- 进度指示 -->
+  <view class="progress-steps">
+    <view class="step active">
+      <view class="step-number">1</view>
+      <text class="step-text">微信授权</text>
+    </view>
+    <view class="step active">
+      <view class="step-number">2</view>
+      <text class="step-text">绑定手机</text>
+    </view>
+    <view class="step active">
+      <view class="step-number">3</view>
+      <text class="step-text">选择身份</text>
+    </view>
+  </view>
+
+  <view class="select-header">
+    <text class="title">请选择您的身份</text>
+    <text class="subtitle">选择后身份将不能更改，请谨慎选择</text>
+  </view>
+
+  <view class="role-options">
+    <!-- 学生选项 -->
+    <view 
+      class="role-card {{selectedRole === 'student' ? 'selected' : ''}}" 
+      bindtap="selectRole" 
+      data-role="student"
+    >
+      <image class="role-icon" src="/images/student-icon.png"></image>
+      <text class="role-title">学生</text>
+      <text class="role-desc">浏览课程、订阅老师、学习知识</text>
+      <view class="features">
+        <text class="feature-item">✓ 浏览所有老师</text>
+        <text class="feature-item">✓ 订阅喜欢的课程</text>
+        <text class="feature-item">✓ 在线学习交流</text>
+      </view>
+    </view>
+
+    <!-- 教师选项 -->
+    <view 
+      class="role-card {{selectedRole === 'teacher' ? 'selected' : ''}}" 
+      bindtap="selectRole" 
+      data-role="teacher"
+    >
+      <image class="role-icon" src="/images/teacher-icon.png"></image>
+      <text class="role-title">教师</text>
+      <text class="role-desc">创建课程、管理学生、分享知识</text>
+      <view class="features">
+        <text class="feature-item">✓ 创建个人主页</text>
+        <text class="feature-item">✓ 发布课程内容</text>
+        <text class="feature-item">✓ 需要审核通过</text>
+      </view>
+      <view class="approve-notice" wx:if="{{selectedRole === 'teacher'}}">
+        <text>教师身份需要审核，通常需要1-3个工作日</text>
+      </view>
+    </view>
+  </view>
+
+  <button 
+    class="confirm-btn {{selectedRole ? '' : 'disabled'}}" 
+    bindtap="confirmRole"
+    disabled="{{!selectedRole}}"
+  >
+    完成注册
+  </button>
+
+  <view class="role-tip">
+    <text>提示：身份选择后无法修改，请根据实际情况选择</text>
+  </view>
+</view>
