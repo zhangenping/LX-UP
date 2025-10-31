@@ -1,0 +1,9 @@
+{
+    "name": "queryUserById",
+    "version": "1.0.0",
+    "description": "根据ID查询用户信息",
+    "main": "index.js",
+    "dependencies": {
+      "wx-server-sdk": "~2.6.3"
+    }
+  }

@@ -1,7 +1,28 @@
-<!--index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    Weixin
+<view class="container">
+  <view class="search-section">
+    <text class="title">励学教师查询</text>
+    <view class="input-group">
+      <input 
+        class="input" 
+        type="number" 
+        placeholder="请输入ID" 
+        bindinput="onInputChange"
+        value="{{inputId}}"
+      />
+      <button class="search-btn" bindtap="searchById" disabled="{{!inputId}}">
+        查询
+      </button>
+    </view>
   </view>
-</scroll-view>
+
+  <view class="result-section" wx:if="{{showResult}}">
+    <view class="result-card {{result.success ? 'success' : 'error'}}">
+      <text class="result-title">{{result.success ? '查询成功' : '查询失败'}}</text>
+      <text class="result-content">{{result.message}}</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>查询中...</text>
+  </view>
+</view>
