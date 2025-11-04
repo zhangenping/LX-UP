@@ -8,7 +8,7 @@
 
   <!-- 登录方式选择 -->
   <view class="login-methods">
-    <view class="method-card wechat-login" bindtap="handleWechatLogin">
+    <view class="method-card wechat-login" bindtap="onGetUserProfile">
       <image class="method-icon" src="/images/wechat-icon.png"></image>
       <text class="method-text">微信一键登录</text>
       <text class="method-desc">快速安全，推荐使用</text>
@@ -19,10 +19,18 @@
 
   <!-- 协议说明 -->
   <view class="agreement">
-    <checkbox checked="{{agreementChecked}}" bindchange="onAgreementChange" />
-    <text class="agreement-text">我已阅读并同意</text>
-    <text class="agreement-link" bindtap="showUserAgreement">《用户协议》</text>
-    <text class="agreement-text">和</text>
-    <text class="agreement-link" bindtap="showPrivacyPolicy">《隐私政策》</text>
+    <view class="agreement-switch">
+      <text class="agreement-text">我已阅读并同意</text>
+      <switch 
+        checked="{{agreementChecked}}" 
+        bindchange="onAgreementChange"
+        color="#07c160"
+      />
+    </view>
+    <view class="agreement-links">
+      <text class="agreement-link" bindtap="showUserAgreement">《用户协议》</text>
+      <text class="agreement-text">和</text>
+      <text class="agreement-link" bindtap="showPrivacyPolicy">《隐私政策》</text>
+    </view>
   </view>
 </view>

@@ -43,39 +43,62 @@ Page({
     },
   
     // 获取验证码
-    async getVerifyCode() {
-      if (!this.data.canGetCode) return;
-  
-      wx.showLoading({ title: '发送中...' });
-  
-      try {
-        const res = await wx.cloud.callFunction({
-          name: 'sendSmsCode',
-          data: {
-            phoneNumber: this.data.phoneNumber,
-            type: 'register'
-          }
-        });
-  
-        wx.hideLoading();
-  
-        if (res.result.success) {
-          wx.showToast({ title: '验证码已发送' });
-          this.startCountdown();
-        } else {
+    getVerifyCode() {
+        const { phoneNumber, canGetCode } = this.data;
+        
+        if (!canGetCode) {
           wx.showToast({
-            title: res.result.message || '发送失败',
+            title: '请输入正确的手机号',
             icon: 'none'
           });
+          return;
         }
-      } catch (error) {
-        wx.hideLoading();
-        wx.showToast({
-          title: '发送失败，请重试',
-          icon: 'none'
+      
+        wx.showLoading({ title: '发送中...' });
+        
+        wx.cloud.callFunction({
+          name: 'sendSmsCode',
+          data: {
+            phoneNumber: phoneNumber,
+            type: 'register'
+          }
+        }).then(res => {
+          wx.hideLoading();
+          console.log('云函数响应:', res);
+          
+          if (res.result && res.result.success) {
+            // 显示验证码（开发环境）
+            if (res.result.code) {
+              console.log('验证码:', res.result.code);
+              wx.showModal({
+                title: '验证码已发送',
+                content: `验证码：${res.result.code}（开发测试用）`,
+                showCancel: false,
+                confirmText: '知道了'
+              });
+            } else {
+              wx.showToast({ 
+                title: '验证码已发送',
+                icon: 'success'
+              });
+            }
+            
+            this.startCountdown();
+          } else {
+            wx.showToast({
+              title: res.result?.message || '发送失败',
+              icon: 'none'
+            });
+          }
+        }).catch(error => {
+          wx.hideLoading();
+          console.error('云函数调用失败:', error);
+          wx.showToast({
+            title: '网络错误，请重试',
+            icon: 'none'
+          });
         });
-      }
-    },
+      },
   
     startCountdown() {
       this.setData({ countdown: 60 });

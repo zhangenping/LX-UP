@@ -1,6 +1,8 @@
 Page({
     data: {
-      agreementChecked: false
+      agreementChecked: false,
+      // 添加一个标志来跟踪是否正在登录
+      isLogging: false
     },
   
     onLoad() {
@@ -41,9 +43,46 @@ Page({
       }
     },
   
-    // 微信登录
-    async handleWechatLogin() {
+    // 完善的 wx.login 封装
+    wxLoginWithTimeout() {
+      return new Promise((resolve, reject) => {
+        // 设置超时（10秒）
+        const timeoutTimer = setTimeout(() => {
+          reject(new Error('wx.login 超时，请检查网络连接'));
+        }, 10000);
+  
+        console.log('🔹 开始调用 wx.login()...');
+        
+        wx.login({
+          success: (res) => {
+            clearTimeout(timeoutTimer);
+            console.log('✅ wx.login 成功:', res);
+            
+            if (res.code) {
+              resolve(res);
+            } else {
+              reject(new Error('未获取到登录code'));
+            }
+          },
+          fail: (err) => {
+            clearTimeout(timeoutTimer);
+            console.error('❌ wx.login 失败:', err);
+            reject(new Error('登录失败: ' + (err.errMsg || '未知错误')));
+          },
+          complete: () => {
+            console.log('🔹 wx.login 调用完成');
+          }
+        });
+      });
+    },
+  
+    // 获取用户信息 - 必须在用户点击事件中调用
+    onGetUserProfile() {
+      console.log('🎯 onGetUserProfile 被调用了！');
+      console.log('📊 当前 agreementChecked:', this.data.agreementChecked);
+      
       if (!this.data.agreementChecked) {
+        console.log('❌ 协议未同意，显示提示');
         wx.showToast({
           title: '请先同意用户协议',
           icon: 'none'
@@ -51,65 +90,84 @@ Page({
         return;
       }
   
-      wx.showLoading({ title: '登录中...' });
+      if (this.data.isLogging) {
+        return; // 防止重复点击
+      }
   
-      try {
-        // 1. 获取微信登录凭证
-        const loginRes = await wx.login();
-        
-        // 2. 获取用户信息授权
-        const userInfoRes = await this.getUserProfile();
-        
-        // 3. 调用登录云函数
-        const cloudRes = await wx.cloud.callFunction({
-          name: 'wechatLogin',
-          data: {
-            code: loginRes.code,
-            userInfo: userInfoRes.userInfo
-          }
-        });
-  
-        wx.hideLoading();
-  
-        if (cloudRes.result.success) {
-          const { user, isNewUser, token } = cloudRes.result;
-          
-          // 保存登录状态
-          wx.setStorageSync('token', token);
-          wx.setStorageSync('userInfo', user);
-          
-          if (isNewUser) {
-            // 新用户需要绑定手机号和选择角色
-            this.goToPhoneBinding(userInfoRes.userInfo);
-          } else {
-            // 老用户直接进入主页面
-            this.redirectToMainPage(user);
-          }
-        } else {
+      console.log('✅ 协议已同意，继续登录流程');
+      
+      // 在用户点击事件中调用 getUserProfile
+      wx.getUserProfile({
+        desc: '用于完善用户资料',
+        success: (userInfoRes) => {
+          console.log('👤 用户信息授权成功');
+          // 获取到用户信息后，继续登录流程
+          this.handleWechatLogin(userInfoRes);
+        },
+        fail: (err) => {
+          console.error('❌ 用户信息授权失败:', err);
           wx.showToast({
-            title: cloudRes.result.message || '登录失败',
+            title: '需要授权用户信息才能登录',
             icon: 'none'
           });
         }
-      } catch (error) {
-        wx.hideLoading();
-        wx.showToast({
-          title: '登录失败，请重试',
-          icon: 'none'
-        });
-        console.error('登录失败:', error);
-      }
+      });
     },
   
-    // 获取用户信息
-    getUserProfile() {
-      return new Promise((resolve, reject) => {
-        wx.getUserProfile({
-          desc: '用于完善用户资料',
-          success: resolve,
-          fail: reject
+    // 微信登录 - 修改为接收用户信息参数
+    async handleWechatLogin(userInfoRes) {
+      this.setData({ isLogging: true });
+      wx.showLoading({ title: '登录中...' });
+
+      try {
+        console.log('🎯 handleWechatLogin 被调用了！');
+        console.log('👤 用户信息:', userInfoRes.userInfo);
+        
+        // 1. 获取微信登录凭证
+        const loginRes = await this.wxLoginWithTimeout();
+        console.log('获取到的code:', loginRes.code);
+        
+        // 2. 模拟登录成功（新用户）
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 模拟新用户数据
+        const mockUser = {
+          _id: 'mock_user_id_' + Date.now(),
+          _openid: 'mock_openid_' + Date.now(),
+          name: userInfoRes.userInfo.nickName,
+          avatar: userInfoRes.userInfo.avatarUrl,
+          role: null, // 新用户需要选择角色
+          phone: null, // 新用户需要绑定手机
+          isNewUser: true
+        };
+        
+        wx.hideLoading();
+        this.setData({ isLogging: false });
+        
+        // 保存登录状态
+        wx.setStorageSync('token', 'mock_token_' + Date.now());
+        wx.setStorageSync('userInfo', mockUser);
+        
+        console.log('✅ 登录成功，跳转到手机绑定');
+        wx.showToast({
+          title: '登录成功!',
+          icon: 'success'
         });
-      });
+        
+        // 跳转到手机绑定页面
+        setTimeout(() => {
+          this.goToPhoneBinding(userInfoRes.userInfo);
+        }, 1000);
+        
+      } catch (error) {
+        wx.hideLoading();
+        this.setData({ isLogging: false });
+        console.error('登录失败:', error);
+        wx.showToast({ 
+          title: error.message, 
+          icon: 'none' 
+        });
+      }
     },
   
     // 跳转到手机绑定页面
@@ -136,10 +194,19 @@ Page({
       }
     },
   
+    // Switch 事件处理
     onAgreementChange(e) {
+      console.log('🎯 onAgreementChange 被调用');
+      console.log('e.detail:', e.detail);
+      
+      // switch 组件的 e.detail.value 是布尔值
+      const isChecked = Boolean(e.detail.value);
+      
       this.setData({
-        agreementChecked: e.detail.value.length > 0
+        agreementChecked: isChecked
       });
+      
+      console.log('✅ 更新成功，agreementChecked:', this.data.agreementChecked);
     },
   
     showUserAgreement() {
