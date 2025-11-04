@@ -121,7 +121,7 @@ Page({
   
       try {
         const res = await wx.cloud.callFunction({
-          name: 'verifyPhoneCode',
+          name: 'verifySmsCode',
           data: {
             phoneNumber: this.data.phoneNumber,
             code: this.data.verifyCode
