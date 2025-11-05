@@ -1,0 +1,9 @@
+{
+    "name": "completeRegistration",
+    "version": "1.0.0",
+    "description": "完成选角注册",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "^2.5.3"
+    }
+}

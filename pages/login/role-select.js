@@ -89,6 +89,7 @@ Page({
           });
         }
       } else {
+        console.log('注册为学生成功，跳转到主页')
         // 学生直接进入主页
         wx.switchTab({
           url: '/pages/student/index'
