@@ -1,0 +1,48 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <van-search
+      value="{{searchValue}}"
+      placeholder="搜索教师或课程"
+      bind:search="onSearch"
+    />
+  </view>
+
+  <!-- 教师列表 -->
+  <view class="teacher-list">
+    <van-skeleton title row="3" loading="{{loading}}">
+      <block wx:for="{{teachers}}" wx:key="_id">
+        <view class="teacher-card" bindtap="onTeacherTap" data-id="{{item._id}}">
+          <view class="teacher-header">
+            <image class="teacher-avatar" src="{{item.avatar}}" mode="aspectFill" />
+            <view class="teacher-info">
+              <view class="teacher-name">{{item.name}}</view>
+              <view class="teacher-title">{{item.title}}</view>
+              <view class="teacher-specialty">擅长: {{item.specialty}}</view>
+            </view>
+          </view>
+          
+          <view class="teacher-stats">
+            <view class="stat-item">
+              <text class="stat-value">{{item.rating || 5.0}}</text>
+              <text class="stat-label">评分</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-value">{{item.studentCount || 0}}</text>
+              <text class="stat-label">学生数</text>
+            </view>
+            <view class="stat-item">
+              <van-rate value="{{item.rating || 5}}" size="12" readonly />
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <view wx:if="{{teachers.length === 0 && !loading}}" class="empty-state">
+        <image src="/images/empty.png" class="empty-image" />
+        <text class="empty-text">暂无教师数据</text>
+      </view>
+    </van-skeleton>
+  </view>
+</view>

@@ -1,0 +1,38 @@
+<!--pages/user/profile.wxml-->
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="user-header">
+    <image class="user-avatar" src="{{userInfo.avatar}}" />
+    <view class="user-info">
+      <view class="user-name">{{userInfo.name}}</view>
+      <view class="user-role">{{userInfo.role === 'teacher' ? '教师' : '学生'}}</view>
+    </view>
+  </view>
+
+  <!-- 订阅课程 -->
+  <view class="section">
+    <view class="section-title">我的订阅</view>
+    <van-skeleton row="3" loading="{{loading}}">
+      <block wx:for="{{subscriptions}}" wx:key="_id">
+        <view class="subscription-card">
+          <view class="course-info">
+            <view class="course-name">{{item.courseName}}</view>
+            <view class="teacher-name">教师: {{item.teacherName}}</view>
+            <view class="subscription-time">订阅时间: {{item.subscribeTime}}</view>
+          </view>
+          <view class="verification-code">
+            <view class="code-label">核销码</view>
+            <view class="code-value" bindtap="onCopyCode" data-code="{{item.verificationCode}}">
+              {{item.verificationCode}}
+              <text class="copy-text">点击复制</text>
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <view wx:if="{{subscriptions.length === 0 && !loading}}" class="empty-state">
+        <text class="empty-text">暂无订阅课程</text>
+      </view>
+    </van-skeleton>
+  </view>
+</view>

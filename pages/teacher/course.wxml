@@ -1,0 +1,84 @@
+<!--pages/teacher/course.wxml-->
+<view class="container">
+  <van-skeleton title row="3" loading="{{loading}}">
+    <view wx:if="{{course}}">
+      <!-- 课程头部信息 -->
+      <view class="course-header">
+        <view class="course-title">{{course.name}}</view>
+        <view class="course-teacher" bindtap="onViewTeacher">
+          <text>教师: {{teacher.name}}</text>
+          <van-icon name="arrow" size="12px" />
+        </view>
+        <view class="course-price">¥{{course.price}}</view>
+      </view>
+
+      <!-- 课程详情 -->
+      <view class="section">
+        <view class="section-title">课程介绍</view>
+        <view class="section-content">{{course.description || '暂无介绍'}}</view>
+      </view>
+
+      <view class="section">
+        <view class="section-title">课程信息</view>
+        <view class="course-info-grid">
+          <view class="info-item">
+            <view class="info-label">课时</view>
+            <view class="info-value">{{course.hours}}小时</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">难度</view>
+            <view class="info-value">{{course.level || '初级'}}</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">学生数</view>
+            <view class="info-value">{{course.studentCount || 0}}人</view>
+          </view>
+          <view class="info-item">
+            <view class="info-label">评分</view>
+            <view class="info-value">{{course.rating || '暂无'}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="section" wx:if="{{course.schedule}}">
+        <view class="section-title">授课时间</view>
+        <view class="schedule-list">
+          <block wx:for="{{course.schedule}}" wx:key="index">
+            <view class="schedule-item">
+              <text class="day">{{item.day}}</text>
+              <text class="time">{{item.time}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- 订阅状态 -->
+      <view class="subscription-section" wx:if="{{isSubscribed}}">
+        <view class="subscription-header">
+          <van-icon name="passed" color="#07c160" />
+          <text>已订阅</text>
+        </view>
+        <view class="verification-code">
+          <view class="code-label">课程核销码</view>
+          <view class="code-value" bindtap="onCopyVerificationCode">
+            {{subscriptionInfo.verificationCode}}
+            <text class="copy-hint">点击复制</text>
+          </view>
+          <view class="code-tip">向教师出示此核销码完成课程验证</view>
+        </view>
+      </view>
+
+      <!-- 底部操作栏 -->
+      <view class="action-bar">
+        <button class="contact-btn" bindtap="onContactTeacher">联系教师</button>
+        <button 
+          class="subscribe-btn {{isSubscribed ? 'subscribed' : ''}}" 
+          bindtap="{{isSubscribed ? '' : 'onSubscribe'}}"
+          disabled="{{isSubscribed}}"
+        >
+          {{isSubscribed ? '已订阅' : '立即订阅'}}
+        </button>
+      </view>
+    </view>
+  </van-skeleton>
+</view>
