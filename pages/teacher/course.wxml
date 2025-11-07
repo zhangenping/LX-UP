@@ -1,118 +1,127 @@
 <!--pages/teacher/course.wxml-->
 <view class="page-container">
-<view class="container">
-  <van-skeleton title row="3" loading="{{loading}}">
-    <view wx:if="{{course}}">
-      <!-- 课程头部信息 -->
-      <view class="course-header">
-        <view class="course-title">{{course.name}}</view>
-        <view class="course-teacher" bindtap="onViewTeacher">
-          <text>教师: {{teacher.name}}</text>
-          <van-icon name="arrow" size="12px" />
+  <view class="container">
+    <van-skeleton title row="3" loading="{{loading}}">
+      <view wx:if="{{course}}">
+        <!-- 课程头部信息 -->
+        <view class="course-header">
+          <view class="course-title">{{course.name}}</view>
+          <view class="course-teacher" bindtap="onViewTeacher">
+            <text>教师: {{teacher.name}}</text>
+            <van-icon name="arrow" size="12px" />
+          </view>
+          <view class="course-price">¥{{course.price}}</view>
         </view>
-        <view class="course-price">¥{{course.price}}</view>
-      </view>
 
-      <!-- 课程详情 -->
-      <view class="section">
-        <view class="section-title">课程介绍</view>
-        <view class="section-content">{{course.description || '暂无介绍'}}</view>
-      </view>
-
-      <view class="section">
-        <view class="section-title">课程信息</view>
-        <view class="course-info-grid">
-          <view class="info-item">
-            <view class="info-label">课时</view>
-            <view class="info-value">{{course.hours}}小时</view>
+        <!-- 课程详情 -->
+        <view class="section">
+          <view class="section-title">
+            <view class="title-decoration"></view>
+            课程介绍
           </view>
-          <view class="info-item">
-            <view class="info-label">难度</view>
-            <view class="info-value">{{course.level || '初级'}}</view>
-          </view>
-          <view class="info-item">
-            <view class="info-label">学生数</view>
-            <view class="info-value">{{course.studentCount || 0}}人</view>
-          </view>
-          <view class="info-item">
-            <view class="info-label">评分</view>
-            <view class="info-value">{{course.rating || '暂无'}}</view>
-          </view>
+          <view class="section-content">{{course.description || '暂无介绍'}}</view>
         </view>
-      </view>
 
-      <view class="section" wx:if="{{course.schedule}}">
-        <view class="section-title">授课时间</view>
-        <view class="schedule-list">
-          <block wx:for="{{course.schedule}}" wx:key="index">
-            <view class="schedule-item">
-              <text class="day">{{item.day}}</text>
-              <text class="time">{{item.time}}</text>
+        <view class="section">
+          <view class="section-title">
+            <view class="title-decoration"></view>
+            课程信息
+          </view>
+          <view class="course-info-grid">
+            <view class="info-item">
+              <view class="info-label">课时</view>
+              <view class="info-value">{{course.hours}}小时</view>
             </view>
-          </block>
-        </view>
-      </view>
-
-      <!-- 订阅状态 -->
-      <view class="subscription-section" wx:if="{{isSubscribed}}">
-        <view class="subscription-header">
-          <van-icon name="passed" color="#07c160" />
-          <text>已订阅</text>
-        </view>
-        
-        <!-- 核销码卡片 -->
-        <view class="verification-card">
-          <view class="verification-code">
-            <view class="code-label">课程核销码</view>
-            <view class="code-value" bindtap="onCopyVerificationCode">
-              {{subscriptionInfo.verificationCode}}
-              <text class="copy-hint">点击复制</text>
+            <view class="info-item">
+              <view class="info-label">难度</view>
+              <view class="info-value">{{course.level || '初级'}}</view>
             </view>
-            <view class="code-tip">向教师出示此核销码完成课程验证</view>
+            <view class="info-item">
+              <view class="info-label">学生数</view>
+              <view class="info-value">{{course.studentCount || 0}}人</view>
+            </view>
+            <view class="info-item">
+              <view class="info-label">评分</view>
+              <view class="info-value">{{course.rating || '暂无'}}</view>
+            </view>
           </view>
+        </view>
 
-          <!-- 二维码区域 -->
-          <view class="qrcode-section" wx:if="{{qrCodeImage}}">
-            <view class="qrcode-divider"></view>
-            <view class="qrcode-content">
-              <view class="qrcode-title">核销二维码</view>
-              <image class="qrcode-image" src="{{qrCodeImage}}" mode="widthFix"></image>
-              <view class="qrcode-actions">
-                <button class="qrcode-btn save-btn" bindtap="onSaveQRCode">保存二维码</button>
-                <button class="qrcode-btn share-btn" open-type="share">分享课程</button>
+        <view class="section" wx:if="{{course.schedule && course.schedule.length}}">
+          <view class="section-title">
+            <view class="title-decoration"></view>
+            授课时间
+          </view>
+          <view class="schedule-list">
+            <block wx:for="{{course.schedule}}" wx:key="index">
+              <view class="schedule-item">
+                <text class="day">{{item.day}}</text>
+                <text class="time">{{item.time}}</text>
               </view>
-              <view class="qrcode-tip">扫描二维码快速核销</view>
+            </block>
+          </view>
+        </view>
+
+        <!-- 订阅状态 -->
+        <view class="subscription-section" wx:if="{{isSubscribed}}">
+          <view class="subscription-header">
+            <van-icon name="passed" color="#07c160" />
+            <text>已订阅</text>
+          </view>
+          
+          <!-- 核销码卡片 -->
+          <view class="verification-card">
+            <view class="verification-code">
+              <view class="code-label">课程核销码</view>
+              <view class="code-value" bindtap="onCopyVerificationCode">
+                {{subscriptionInfo.verificationCode}}
+                <text class="copy-hint">点击复制</text>
+              </view>
+              <view class="code-tip">向教师出示此核销码完成课程验证</view>
+            </view>
+
+            <!-- 二维码区域 -->
+            <view class="qrcode-section" wx:if="{{qrCodeImage}}">
+              <view class="qrcode-divider"></view>
+              <view class="qrcode-content">
+                <view class="qrcode-title">核销二维码</view>
+                <image class="qrcode-image" src="{{qrCodeImage}}" mode="widthFix"></image>
+                <view class="qrcode-actions">
+                  <button class="qrcode-btn save-btn" bindtap="onSaveQRCode">保存二维码</button>
+                  <button class="qrcode-btn share-btn" open-type="share">分享课程</button>
+                </view>
+                <view class="qrcode-tip">扫描二维码快速核销</view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 订阅详情 -->
+          <view class="subscription-detail">
+            <view class="detail-item">
+              <van-icon name="clock-o" size="14px" color="#999" />
+              <text class="detail-label">订阅时间：</text>
+              <text class="detail-value">{{formatDate(subscriptionInfo.subscribedAt)}}</text>
+            </view>
+            <view class="detail-item">
+              <van-icon name="calender-o" size="14px" color="#999" />
+              <text class="detail-label">有效期至：</text>
+              <text class="detail-value">{{formatDate(subscriptionInfo.expiresAt)}}</text>
             </view>
           </view>
         </view>
-
-        <!-- 订阅详情 -->
-        <view class="subscription-detail">
-          <view class="detail-item">
-            <van-icon name="clock-o" size="14px" color="#999" />
-            <text class="detail-label">订阅时间：</text>
-            <text class="detail-value">{{formatDate(subscriptionInfo.subscribedAt)}}</text>
-          </view>
-          <view class="detail-item">
-            <van-icon name="calender-o" size="14px" color="#999" />
-            <text class="detail-label">有效期至：</text>
-            <text class="detail-value">{{formatDate(subscriptionInfo.expiresAt)}}</text>
-          </view>
-        </view>
       </view>
+    </van-skeleton>
+  </view>
 
-      <!-- 底部操作栏 -->
-      <view class="action-bar">
-        <button class="contact-btn" bindtap="onContactTeacher">联系教师</button>
-        <button 
-          class="subscribe-btn {{isSubscribed ? 'subscribed' : ''}}" 
-          bindtap="{{isSubscribed ? '' : 'onSubscribe'}}"
-          disabled="{{isSubscribed}}"
-        >
-          {{isSubscribed ? '已订阅' : '立即订阅 ¥' + course.price}}
-        </button>
-      </view>
-    </view>
-  </van-skeleton>
-</view>
+  <!-- 底部操作栏移到滚动容器外部 -->
+  <view class="action-bar">
+    <button class="contact-btn" bindtap="onContactTeacher">联系教师</button>
+    <button 
+      class="subscribe-btn {{isSubscribed ? 'subscribed' : ''}}" 
+      bindtap="{{isSubscribed ? '' : 'onSubscribe'}}"
+      disabled="{{isSubscribed}}"
+    >
+      {{isSubscribed ? '已订阅' : '立即订阅 ¥' + course.price}}
+    </button>
+  </view>
 </view>

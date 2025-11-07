@@ -1,44 +1,47 @@
 /* pages/teacher/course.wxss */
-.container {
-  padding-bottom: 140rpx; /* 为底部操作栏留出空间 */
-  min-height: 100vh;
+
+/* 页面级滚动容器 */
+.page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #f5f5f5;
 }
 
-/* 添加页面级滚动容器 */
-.page-container {
-  height: 100vh;
+/* 主要内容容器 - 可滚动 */
+.container {
+  flex: 1;
   overflow-y: auto;
-  background: #f5f5f5;
+  padding-bottom: 20rpx;
 }
 
 /* 课程头部信息 */
 .course-header {
   background: white;
-  padding: 30rpx;
+  padding: 40rpx 30rpx;
   margin: 20rpx;
   border-radius: 16rpx;
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
 }
 
 .course-title {
-  font-size: 36rpx;
+  font-size: 38rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 20rpx;
+  margin-bottom: 25rpx;
   line-height: 1.4;
 }
 
 .course-teacher {
   display: flex;
   align-items: center;
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: #666;
-  margin-bottom: 20rpx;
+  margin-bottom: 25rpx;
 }
 
 .course-price {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: bold;
   color: #e74c3c;
 }
@@ -46,23 +49,24 @@
 /* 课程详情部分 */
 .section {
   background: white;
-  margin: 20rpx;
-  padding: 30rpx;
+  margin: 25rpx 20rpx;
+  padding: 35rpx 30rpx;
   border-radius: 16rpx;
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
 }
 
 .section-title {
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 600;
   color: #333;
-  margin-bottom: 25rpx;
+  margin-bottom: 30rpx;
   position: relative;
-  padding-left: 20rpx;
+  padding-left: 25rpx;
+  display: flex;
+  align-items: center;
 }
 
-.section-title::before {
-  content: '';
+.section-title .title-decoration {
   position: absolute;
   left: 0;
   top: 50%;
@@ -74,35 +78,40 @@
 }
 
 .section-content {
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: #666;
-  line-height: 1.6;
+  line-height: 1.7;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  min-height: 60rpx;
 }
 
 /* 课程信息网格 */
 .course-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25rpx;
+  gap: 30rpx;
 }
 
 .info-item {
   text-align: center;
-  padding: 25rpx;
+  padding: 30rpx 25rpx;
   background: #f8f9fa;
   border-radius: 12rpx;
+  min-height: 120rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .info-label {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #999;
   margin-bottom: 15rpx;
 }
 
 .info-value {
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: #333;
   font-weight: 500;
 }
@@ -111,33 +120,34 @@
 .schedule-list {
   display: flex;
   flex-direction: column;
-  gap: 20rpx;
+  gap: 25rpx;
 }
 
 .schedule-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx;
+  padding: 25rpx;
   background: #f8f9fa;
   border-radius: 12rpx;
+  min-height: 90rpx;
 }
 
 .day {
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: #333;
   font-weight: 500;
 }
 
 .time {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #666;
 }
 
-/* 订阅状态区域 - 修复布局 */
+/* 订阅状态区域 */
 .subscription-section {
   background: #fff;
-  margin: 20rpx;
+  margin: 25rpx 20rpx;
   border-radius: 16rpx;
   overflow: hidden;
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
@@ -173,7 +183,7 @@
 }
 
 .code-value {
-  font-size: 56rpx; /* 减小字体避免溢出 */
+  font-size: 56rpx;
   font-weight: bold;
   letter-spacing: 6rpx;
   color: #e74c3c;
@@ -204,7 +214,7 @@
   padding: 0 20rpx;
 }
 
-/* 二维码区域优化 */
+/* 二维码区域 */
 .qrcode-divider {
   height: 1rpx;
   background: linear-gradient(90deg, transparent 0%, #e0e0e0 50%, transparent 100%);
@@ -223,7 +233,7 @@
 }
 
 .qrcode-image {
-  width: 280rpx; /* 减小尺寸适应屏幕 */
+  width: 280rpx;
   height: 280rpx;
   border: 8rpx solid #fff;
   border-radius: 16rpx;
@@ -236,7 +246,7 @@
   gap: 20rpx;
   margin: 25rpx 0 15rpx;
   justify-content: center;
-  flex-wrap: wrap; /* 小屏幕时换行 */
+  flex-wrap: wrap;
 }
 
 .qrcode-btn {
@@ -292,18 +302,13 @@
   font-weight: 500;
 }
 
-/* 底部操作栏 */
+/* 底部操作栏 - 固定在页面底部，不在滚动区域内 */
 .action-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
   background: #fff;
-  padding: 20rpx;
+  padding: 25rpx;
   border-top: 1rpx solid #f0f0f0;
   box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.06);
-  z-index: 100;
+  flex-shrink: 0; /* 防止底部栏被压缩 */
 }
 
 .contact-btn {
@@ -313,9 +318,9 @@
   border: none;
   border-radius: 50rpx;
   margin-right: 20rpx;
-  font-size: 28rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  font-size: 30rpx;
+  height: 90rpx;
+  line-height: 90rpx;
 }
 
 .subscribe-btn {
@@ -324,9 +329,10 @@
   color: white;
   border: none;
   border-radius: 50rpx;
-  font-size: 30rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  font-size: 32rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-weight: 600;
 }
 
 .subscribe-btn.subscribed {
@@ -340,7 +346,7 @@
   .section,
   .subscription-section {
     margin: 15rpx;
-    padding: 25rpx;
+    padding: 30rpx 25rpx;
   }
   
   .code-value {
@@ -367,17 +373,4 @@
   .qrcode-btn {
     width: 200rpx;
   }
-}
-
-/* 确保内容不超出屏幕 */
-.section-content,
-.code-value,
-.detail-value {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* 添加滚动支持 */
-.container {
-  overflow-x: hidden;
 }
