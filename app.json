@@ -2,11 +2,17 @@
     "pages": [
         "pages/login/login",
         "pages/login/phone-binding",
-        "pages/login/role-select"
+        "pages/login/role-select",
+        "pages/index/index",
+        "pages/teacher/detail",
+        "pages/teacher/course",
+        "pages/user/profile"
     ],
     "window": {
-        "navigationBarTextStyle": "black",
-        "navigationStyle": "custom"
+      "backgroundTextStyle": "light",
+      "navigationBarBackgroundColor": "#fff",
+      "navigationBarTitleText": "教育平台",
+      "navigationBarTextStyle": "black"
     },
     "style": "v2",
     "renderer": "skyline",
@@ -22,5 +28,29 @@
     },
     "componentFramework": "glass-easel",
     "sitemapLocation": "sitemap.json",
-    "lazyCodeLoading": "requiredComponents"
-}
+    "lazyCodeLoading": "requiredComponents",
+    "usingComponents": {
+      "van-button": "@vant/weapp/button/index",
+      "van-search": "@vant/weapp/search/index",
+      "van-skeleton": "@vant/weapp/skeleton/index",
+      "van-tabs": "@vant/weapp/tabs/index",
+      "van-tab": "@vant/weapp/tab/index",
+      "van-rate": "@vant/weapp/rate/index"
+    },
+    "tabBar": {
+      "color": "#7A7E83",
+      "selectedColor": "#3cc51f",
+      "borderStyle": "black",
+      "backgroundColor": "#ffffff",
+      "list": [
+        {
+          "pagePath": "pages/index/index",
+          "text": "首页"
+        },
+        {
+          "pagePath": "pages/user/profile",
+          "text": "我的"
+        }
+      ]
+    }
+  }
