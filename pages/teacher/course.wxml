@@ -1,4 +1,5 @@
 <!--pages/teacher/course.wxml-->
+<view class="page-container">
 <view class="container">
   <van-skeleton title row="3" loading="{{loading}}">
     <view wx:if="{{course}}">
@@ -58,13 +59,45 @@
           <van-icon name="passed" color="#07c160" />
           <text>已订阅</text>
         </view>
-        <view class="verification-code">
-          <view class="code-label">课程核销码</view>
-          <view class="code-value" bindtap="onCopyVerificationCode">
-            {{subscriptionInfo.verificationCode}}
-            <text class="copy-hint">点击复制</text>
+        
+        <!-- 核销码卡片 -->
+        <view class="verification-card">
+          <view class="verification-code">
+            <view class="code-label">课程核销码</view>
+            <view class="code-value" bindtap="onCopyVerificationCode">
+              {{subscriptionInfo.verificationCode}}
+              <text class="copy-hint">点击复制</text>
+            </view>
+            <view class="code-tip">向教师出示此核销码完成课程验证</view>
           </view>
-          <view class="code-tip">向教师出示此核销码完成课程验证</view>
+
+          <!-- 二维码区域 -->
+          <view class="qrcode-section" wx:if="{{qrCodeImage}}">
+            <view class="qrcode-divider"></view>
+            <view class="qrcode-content">
+              <view class="qrcode-title">核销二维码</view>
+              <image class="qrcode-image" src="{{qrCodeImage}}" mode="widthFix"></image>
+              <view class="qrcode-actions">
+                <button class="qrcode-btn save-btn" bindtap="onSaveQRCode">保存二维码</button>
+                <button class="qrcode-btn share-btn" open-type="share">分享课程</button>
+              </view>
+              <view class="qrcode-tip">扫描二维码快速核销</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 订阅详情 -->
+        <view class="subscription-detail">
+          <view class="detail-item">
+            <van-icon name="clock-o" size="14px" color="#999" />
+            <text class="detail-label">订阅时间：</text>
+            <text class="detail-value">{{formatDate(subscriptionInfo.subscribedAt)}}</text>
+          </view>
+          <view class="detail-item">
+            <van-icon name="calender-o" size="14px" color="#999" />
+            <text class="detail-label">有效期至：</text>
+            <text class="detail-value">{{formatDate(subscriptionInfo.expiresAt)}}</text>
+          </view>
         </view>
       </view>
 
@@ -76,9 +109,10 @@
           bindtap="{{isSubscribed ? '' : 'onSubscribe'}}"
           disabled="{{isSubscribed}}"
         >
-          {{isSubscribed ? '已订阅' : '立即订阅'}}
+          {{isSubscribed ? '已订阅' : '立即订阅 ¥' + course.price}}
         </button>
       </view>
     </view>
   </van-skeleton>
+</view>
 </view>
