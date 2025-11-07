@@ -236,5 +236,19 @@ Page({
     if (!dateString) return ''
     const date = new Date(dateString)
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+  },
+
+  onNavigateBack() {
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      wx.navigateBack({
+        delta: 1
+      })
+    } else {
+      // 如果没有上一页，则跳转到首页
+      wx.switchTab({
+        url: '/pages/index/index'
+      })
+    }
   }
 })

@@ -15,11 +15,35 @@
   padding-bottom: 20rpx;
 }
 
+/* 左上角返回按钮 */
+.corner-back-btn {
+  position: fixed;
+  left: 20rpx;
+  top: 20rpx;
+  width: 64rpx;
+  height: 64rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.15);
+  backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.corner-back-btn:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 1);
+}
+
 /* 课程头部信息 */
 .course-header {
   background: white;
   padding: 40rpx 30rpx;
-  margin: 20rpx;
+  margin: 80rpx 20rpx 20rpx 20rpx; /* 上边距增加 */
   border-radius: 16rpx;
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
 }
