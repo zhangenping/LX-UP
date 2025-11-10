@@ -1,0 +1,52 @@
+<!--pages/user/verify-codes/verify-codes.wxml-->
+<view class="page-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="back-btn" bindtap="onNavigateBack">
+      <van-icon name="arrow-left" size="16px" color="#333" />
+      <text class="back-text">返回</text>
+    </view>
+    <text class="page-title">我的核销码</text>
+  </view>
+  
+  <!-- 内容区域 -->
+  <view class="content">
+    <!-- 空状态 -->
+    <view wx:if="{{verifyCodes.length === 0}}" class="empty-state">
+      <van-icon name="qr" size="80px" color="#ccc" />
+      <text class="empty-text">暂无核销码</text>
+      <text class="empty-desc">订阅课程后将会生成核销码</text>
+      <navigator url="/pages/index/index" class="empty-action">去订阅课程</navigator>
+    </view>
+    
+    <!-- 核销码列表 -->
+    <view wx:else class="verify-code-list">
+      <block wx:for="{{verifyCodes}}" wx:key="_id">
+        <view class="verify-code-item">
+          <view class="code-header">
+            <text class="course-name">{{item.courseName}}</text>
+            <view class="status-badge {{item.status}}">
+              {{item.status === 'active' ? '未使用' : item.status === 'used' ? '已使用' : '已过期'}}
+            </view>
+          </view>
+          
+          <view class="code-display">
+            <text class="code-value">{{item.code}}</text>
+            <text class="code-hint">向教师出示此码进行核销</text>
+          </view>
+          
+          <view class="code-info">
+            <text class="info-item">创建时间: {{formatDate(item.createdAt)}}</text>
+            <text class="info-item" wx:if="{{item.expiresAt}}">有效期至: {{formatDate(item.expiresAt)}}</text>
+            <text class="info-item" wx:if="{{item.usedCount > 0}}">已使用: {{item.usedCount}}/{{item.usageLimit}}次</text>
+          </view>
+          
+          <view class="code-actions">
+            <button class="action-btn copy-btn" bindtap="onCopyCode" data-code="{{item.code}}">复制核销码</button>
+            <button class="action-btn qr-btn" bindtap="onShowQRCode" data-code="{{item.code}}">显示二维码</button>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

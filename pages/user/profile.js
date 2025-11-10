@@ -1,65 +1,80 @@
 // pages/user/profile.js
+// pages/my/index.js
 Page({
   data: {
-    userInfo: null,
-    subscriptions: [],
-    loading: true
+    userInfo: {},
+    subscriptionCount: 0,
+    verifyCodeCount: 0
   },
 
   onLoad() {
-    this.loadUserInfo()
-    this.loadSubscriptions()
+    this.loadUserData()
   },
 
   onShow() {
-    // 刷新订阅数据
-    this.loadSubscriptions()
+    this.loadUserStats()
   },
 
-  loadUserInfo() {
+  // 加载用户数据
+  loadUserData() {
     const userInfo = wx.getStorageSync('userInfo')
-    this.setData({ userInfo })
+    if (userInfo) {
+      this.setData({ userInfo })
+    } else {
+      // 如果没有用户信息，使用默认
+      this.setData({
+        userInfo: {
+          nickName: '微信用户',
+          avatarUrl: '/images/default-avatar.png'
+        }
+      })
+    }
   },
 
-  async loadSubscriptions() {
+  // 加载用户统计
+  async loadUserStats() {
     try {
-      this.setData({ loading: true })
-      
+      const userInfo = wx.getStorageSync('userInfo')
+      if (!userInfo || !userInfo._openid) return
+
       const db = wx.cloud.database()
-      const res = await db.collection('subscriptions')
+      
+      // 获取订阅数量
+      const subscriptionRes = await db.collection('subscriptions')
         .where({
-          studentId: wx.getStorageSync('userInfo')._openid,
+          studentId: userInfo._openid,
           status: 'active'
         })
         .get()
 
+      // 获取核销码数量
+      const verifyCodeRes = await db.collection('verify_codes')
+        .where({
+          studentId: userInfo._openid
+        })
+        .get()
+
       this.setData({
-        subscriptions: res.data,
-        loading: false
+        subscriptionCount: subscriptionRes.data.length,
+        verifyCodeCount: verifyCodeRes.data.length
       })
+
     } catch (error) {
-      console.error('加载订阅失败:', error)
-      this.setData({ loading: false })
+      console.error('加载统计信息失败:', error)
     }
   },
 
-  onSubscriptionTap(e) {
-    const subscriptionId = e.currentTarget.dataset.id
+  // 跳转到我的订阅
+  goToSubscriptions() {
     wx.navigateTo({
-      url: `/pages/user/subscriptions?id=${subscriptionId}`
+      url: '/pages/my/subscriptions/subscriptions'
     })
   },
 
-  onCopyCode(e) {
-    const code = e.currentTarget.dataset.code
-    wx.setClipboardData({
-      data: code,
-      success: () => {
-        wx.showToast({
-          title: '核销码已复制',
-          icon: 'success'
-        })
-      }
+  // 跳转到我的核销码
+  goToVerifyCodes() {
+    wx.navigateTo({
+      url: '/pages/my/verify-codes/verify-codes'
     })
   }
 })

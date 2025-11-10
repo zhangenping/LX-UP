@@ -1,38 +1,49 @@
 <!--pages/user/profile.wxml-->
-<view class="container">
-  <!-- 用户信息 -->
-  <view class="user-header">
-    <image class="user-avatar" src="{{userInfo.avatar}}" />
+<!-- pages/my/index.wxml -->
+<view class="page-container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
     <view class="user-info">
-      <view class="user-name">{{userInfo.name}}</view>
-      <view class="user-role">{{userInfo.role === 'teacher' ? '教师' : '学生'}}</view>
+      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"></image>
+      <view class="user-detail">
+        <text class="username">{{userInfo.nickName || '微信用户'}}</text>
+        <text class="user-role">学员</text>
+      </view>
+    </view>
+    <view class="stats">
+      <view class="stat-item" bindtap="goToSubscriptions">
+        <text class="stat-value">{{subscriptionCount}}</text>
+        <text class="stat-label">已订阅</text>
+      </view>
+      <view class="stat-item" bindtap="goToVerifyCodes">
+        <text class="stat-value">{{verifyCodeCount}}</text>
+        <text class="stat-label">核销码</text>
+      </view>
     </view>
   </view>
 
-  <!-- 订阅课程 -->
-  <view class="section">
-    <view class="section-title">我的订阅</view>
-    <van-skeleton row="3" loading="{{loading}}">
-      <block wx:for="{{subscriptions}}" wx:key="_id">
-        <view class="subscription-card">
-          <view class="course-info">
-            <view class="course-name">{{item.courseName}}</view>
-            <view class="teacher-name">教师: {{item.teacherName}}</view>
-            <view class="subscription-time">订阅时间: {{item.subscribeTime}}</view>
-          </view>
-          <view class="verification-code">
-            <view class="code-label">核销码</view>
-            <view class="code-value" bindtap="onCopyCode" data-code="{{item.verificationCode}}">
-              {{item.verificationCode}}
-              <text class="copy-text">点击复制</text>
-            </view>
-          </view>
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-list">
+      <!-- 我的订阅 -->
+      <navigator url="/pages/user/subscriptions/subscriptions" class="menu-item">
+        <view class="menu-icon">
+          <van-icon name="orders-o" size="20px" color="#07c160" />
         </view>
-      </block>
-      
-      <view wx:if="{{subscriptions.length === 0 && !loading}}" class="empty-state">
-        <text class="empty-text">暂无订阅课程</text>
-      </view>
-    </van-skeleton>
+        <text class="menu-text">我的订阅</text>
+        <view class="menu-badge" wx:if="{{subscriptionCount > 0}}">{{subscriptionCount}}</view>
+        <van-icon name="arrow" size="14px" color="#ccc" />
+      </navigator>
+
+      <!-- 我的核销码 -->
+      <navigator url="/pages/user/verify-codes/verify-codes" class="menu-item">
+        <view class="menu-icon">
+          <van-icon name="qr" size="20px" color="#1989fa" />
+        </view>
+        <text class="menu-text">我的核销码</text>
+        <view class="menu-badge" wx:if="{{verifyCodeCount > 0}}">{{verifyCodeCount}}</view>
+        <van-icon name="arrow" size="14px" color="#ccc" />
+      </navigator>
+    </view>
   </view>
 </view>

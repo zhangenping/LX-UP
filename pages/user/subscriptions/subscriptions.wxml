@@ -1,0 +1,48 @@
+<!--pages/user/subscriptions/subscriptions.wxml-->
+<view class="page-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="back-btn" bindtap="onNavigateBack">
+      <van-icon name="arrow-left" size="16px" color="#333" />
+      <text class="back-text">返回</text>
+    </view>
+    <text class="page-title">我的订阅</text>
+  </view>
+  
+  <!-- 内容区域 -->
+  <view class="content">
+    <!-- 空状态 -->
+    <view wx:if="{{subscriptions.length === 0}}" class="empty-state">
+      <van-icon name="orders-o" size="80px" color="#ccc" />
+      <text class="empty-text">暂无订阅课程</text>
+      <text class="empty-desc">快去发现感兴趣的课程吧</text>
+      <navigator url="/pages/index/index" class="empty-action">去发现课程</navigator>
+    </view>
+    
+    <!-- 订阅列表 -->
+    <view wx:else class="subscription-list">
+      <block wx:for="{{subscriptions}}" wx:key="_id">
+        <view class="subscription-item" bindtap="onViewCourse" data-courseid="{{item.courseId}}">
+          <view class="course-header">
+            <text class="course-name">{{item.courseName}}</text>
+            <view class="status-badge {{item.status}}">
+              {{item.status === 'active' ? '有效' : '已过期'}}
+            </view>
+          </view>
+          <view class="course-detail">
+            <text class="teacher-name">教师: {{item.teacherName}}</text>
+            <text class="course-price">¥{{item.price}}</text>
+          </view>
+          <view class="subscription-info">
+            <text class="subscribe-time">订阅时间: {{formatDate(item.subscribedAt)}}</text>
+            <text class="expire-time">有效期至: {{formatDate(item.expiresAt)}}</text>
+          </view>
+          <view class="action-buttons">
+            <button class="action-btn view-btn" bindtap="onViewCourse" data-courseid="{{item.courseId}}">查看课程</button>
+            <button class="action-btn verify-btn" bindtap="onViewVerifyCode" data-code="{{item.verificationCode}}">查看核销码</button>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
