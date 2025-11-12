@@ -4,69 +4,102 @@
     <view wx:if="{{teacher}}">
       <!-- 教师头部信息 -->
       <view class="teacher-header">
-        <image class="teacher-avatar" src="{{teacher.avatar}}" />
-        <view class="teacher-basic-info">
-          <view class="teacher-name">{{teacher.name}}</view>
-          <view class="teacher-title">{{teacher.title}}</view>
-          <view class="teacher-stats">
-            <text>评分 {{teacher.rating || 5.0}}</text>
-            <text>·</text>
-            <text>{{teacher.studentCount || 0}} 学生</text>
+        <view class="header-content">
+          <view class="avatar-section">
+            <image class="teacher-avatar" src="{{teacher.avatar}}" mode="aspectFill" />
+            <view class="avatar-badge">
+              <text class="rating-text">{{teacher.rating || 5.0}}</text>
+            </view>
+          </view>
+          <view class="teacher-basic-info">
+            <view class="name-section">
+              <text class="teacher-name">{{teacher.name}}</text>
+              <text class="teacher-title">{{teacher.title}}</text>
+            </view>
+            <view class="teacher-stats">
+              <view class="stat-item">
+                <text class="stat-number">{{teacher.studentCount || 0}}</text>
+                <text class="stat-label">学生数</text>
+              </view>
+              <view class="stat-divider"></view>
+              <view class="stat-item">
+                <text class="stat-number">{{teacher.courseCount || 0}}</text>
+                <text class="stat-label">课程数</text>
+              </view>
+              <view class="stat-divider"></view>
+              <view class="stat-item">
+                <text class="stat-number">{{teacher.teachingYears || 0}}+</text>
+                <text class="stat-label">教龄</text>
+              </view>
+            </view>
           </view>
         </view>
       </view>
 
       <!-- Tab 切换 -->
-      <van-tabs active="{{activeTab}}" bind:change="onTabChange">
-        <van-tab title="简介" name="intro">
-          <view class="tab-content">
-            <view class="section">
-              <view class="section-title">个人介绍</view>
-              <view class="section-content">{{teacher.introduction || '暂无介绍'}}</view>
-            </view>
-            <view class="section">
-              <view class="section-title">教学特色</view>
-              <view class="section-content">{{teacher.specialty || '暂无特色介绍'}}</view>
-            </view>
-          </view>
-        </van-tab>
-
-        <van-tab title="课程" name="courses">
-          <view class="tab-content">
-            <block wx:for="{{courses}}" wx:key="_id">
-              <view class="course-card" bindtap="onSubscribeCourse" data-id="{{item._id}}">
-                <view class="course-name">{{item.name}}</view>
-                <view class="course-info">
-                  <text>课时: {{item.hours}}小时</text>
-                  <text>价格: ¥{{item.price}}</text>
-                </view>
-                <view class="course-desc">{{item.description}}</view>
+      <view class="tab-container">
+        <van-tabs active="{{activeTab}}" bind:change="onTabChange" color="#07c160" sticky>
+          <van-tab title="简介" name="intro">
+            <view class="tab-content">
+              <view class="info-card">
+                <view class="card-title">个人介绍</view>
+                <view class="card-content">{{teacher.introduction || '该老师暂无个人介绍'}}</view>
               </view>
-            </block>
-          </view>
-        </van-tab>
-
-        <van-tab title="评价" name="reviews">
-          <view class="tab-content">
-            <block wx:for="{{reviews}}" wx:key="_id">
-              <view class="review-card">
-                <view class="review-header">
-                  <text class="reviewer">{{item.studentName}}</text>
-                  <van-rate value="{{item.rating}}" size="12" readonly />
-                </view>
-                <view class="review-content">{{item.content}}</view>
-                <view class="review-time">{{item.createTime}}</view>
+              
+              <view class="info-card">
+                <view class="card-title">教学特色</view>
+                <view class="card-content">{{teacher.specialty || '该老师暂无特色介绍'}}</view>
               </view>
-            </block>
-          </view>
-        </van-tab>
-      </van-tabs>
+            </view>
+          </van-tab>
 
-      <!-- 底部操作栏 -->
-      <view class="action-bar">
-        <button class="contact-btn" bindtap="onContactTeacher">联系老师</button>
-        <button class="subscribe-btn" bindtap="onSubscribeCourse">预约课程</button>
+          <van-tab title="课程" name="courses">
+            <view class="tab-content">
+              <view wx:if="{{courses.length === 0}}" class="empty-course">
+                <text class="empty-text">暂无课程</text>
+              </view>
+              
+              <block wx:for="{{courses}}" wx:key="_id">
+                <view class="course-card">
+                  <view class="course-header">
+                    <text class="course-name">{{item.name}}</text>
+                    <view class="course-price">¥{{item.price}}</view>
+                  </view>
+                  <view class="course-info">
+                    <view class="info-tag">{{item.hours}}课时</view>
+                    <view class="info-tag">已报名 {{item.enrolledCount || 0}}人</view>
+                  </view>
+                  <view class="course-desc">{{item.description}}</view>
+                </view>
+              </block>
+            </view>
+          </van-tab>
+
+          <van-tab title="评价" name="reviews">
+            <view class="tab-content">
+              <view wx:if="{{reviews.length === 0}}" class="empty-review">
+                <text class="empty-text">暂无评价</text>
+              </view>
+              
+              <block wx:for="{{reviews}}" wx:key="_id">
+                <view class="review-card">
+                  <view class="review-header">
+                    <text class="reviewer-name">{{item.studentName}}</text>
+                    <text class="review-time">{{item.createTime}}</text>
+                  </view>
+                  <view class="review-content">{{item.content}}</view>
+                </view>
+              </block>
+            </view>
+          </van-tab>
+        </van-tabs>
       </view>
     </view>
   </van-skeleton>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <button class="action-btn contact-btn" bindtap="onContactTeacher">联系老师</button>
+    <button class="action-btn subscribe-btn" bindtap="onSubscribeCourse">预约课程</button>
+  </view>
 </view>
