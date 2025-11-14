@@ -41,6 +41,12 @@
   margin-bottom: 10rpx;
 }
 
+.role-container {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
 .user-role {
   font-size: 24rpx;
   color: #666;
@@ -48,6 +54,48 @@
   padding: 6rpx 16rpx;
   border-radius: 20rpx;
   align-self: flex-start;
+}
+
+.student-role {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.teacher-role {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+/* 待审核标识 */
+.pending-badge {
+  font-size: 20rpx;
+  color: #ff9800;
+  background: #fff3e0;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid #ffb74d;
+}
+
+/* 审核提示信息 */
+.audit-notice {
+  background: #fff8e1;
+  border: 1rpx solid #ffd54f;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.notice-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 15rpx;
+}
+
+.notice-text {
+  font-size: 24rpx;
+  color: #ff9800;
+  flex: 1;
+  line-height: 1.4;
 }
 
 .stats {
@@ -123,6 +171,15 @@
   padding: 4rpx 12rpx;
   border-radius: 20rpx;
   margin-right: 15rpx;
+}
+
+/* 禁用状态的菜单项 */
+.disabled-menu {
+  opacity: 0.5;
+}
+
+.disabled-menu .menu-text {
+  color: #999;
 }
 
 /* 点击效果 */

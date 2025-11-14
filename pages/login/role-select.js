@@ -78,16 +78,10 @@ Page({
   
     redirectAfterRegistration(user) {
       if (user.role === 'teacher') {
-        if (user.status === 'pending') {
-          // 老师待审核状态
-          wx.redirectTo({
-            url: '/pages/teacher/apply-success'
-          });
-        } else {
-          wx.switchTab({
-            url: '/pages/teacher/index'
-          });
-        }
+        console.log('注册为老师成功，跳转到主页')
+        wx.switchTab({
+          url: '/pages/index/index'
+        });
       } else {
         console.log('注册为学生成功，跳转到主页')
         // 学生直接进入主页
