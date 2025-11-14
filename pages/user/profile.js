@@ -1,10 +1,11 @@
 // pages/user/profile.js
-// pages/my/index.js
 Page({
   data: {
     userInfo: {},
     subscriptionCount: 0,
-    verifyCodeCount: 0
+    verifyCodeCount: 0,
+    userRole: 'student', // 用户角色：student/teacher
+    userStatus: 'active' // 用户状态：active/pending/approved/rejected
   },
 
   onLoad() {
@@ -13,12 +14,14 @@ Page({
 
   onShow() {
     this.loadUserStats()
+    this.checkUserRoleAndStatus()
   },
 
   // 加载用户数据
   loadUserData() {
     const userInfo = wx.getStorageSync('userInfo')
     if (userInfo) {
+      console.log("加载数据成功")
       this.setData({ userInfo })
     } else {
       // 如果没有用户信息，使用默认
@@ -31,11 +34,37 @@ Page({
     }
   },
 
+  // 检查用户角色和状态
+  checkUserRoleAndStatus() {
+    const userInfo = wx.getStorageSync('userInfo')
+    if (userInfo && userInfo.role) {
+      this.setData({
+        userRole: userInfo.role,
+        userStatus: userInfo.status || 'active'
+      })
+    } else {
+      // 默认学生身份
+      this.setData({
+        userRole: 'student',
+        userStatus: 'active'
+      })
+    }
+  },
+
   // 加载用户统计
   async loadUserStats() {
     try {
       const userInfo = wx.getStorageSync('userInfo')
       if (!userInfo || !userInfo._openid) return
+
+      // 如果是教师身份且未审核通过，不加载学生相关的统计数据
+      if (this.data.userRole === 'teacher' && this.data.userStatus !== 'approved') {
+        this.setData({
+          subscriptionCount: 0,
+          verifyCodeCount: 0
+        })
+        return
+      }
 
       const db = wx.cloud.database()
       
@@ -66,6 +95,14 @@ Page({
 
   // 跳转到我的订阅
   goToSubscriptions() {
+    // 如果是教师身份且未审核通过，禁用跳转
+    if (this.data.userRole === 'teacher' && this.data.userStatus !== 'approved') {
+      wx.showToast({
+        title: '审核通过后可使用此功能',
+        icon: 'none'
+      })
+      return
+    }
     wx.navigateTo({
       url: '/pages/my/subscriptions/subscriptions'
     })
@@ -73,6 +110,14 @@ Page({
 
   // 跳转到我的核销码
   goToVerifyCodes() {
+    // 如果是教师身份且未审核通过，禁用跳转
+    if (this.data.userRole === 'teacher' && this.data.userStatus !== 'approved') {
+      wx.showToast({
+        title: '审核通过后可使用此功能',
+        icon: 'none'
+      })
+      return
+    }
     wx.navigateTo({
       url: '/pages/my/verify-codes/verify-codes'
     })
