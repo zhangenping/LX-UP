@@ -5,7 +5,20 @@ Page({
     subscriptionCount: 0,
     verifyCodeCount: 0,
     userRole: 'student', // 用户角色：student/teacher
-    userStatus: 'active' // 用户状态：active/pending/approved/rejected
+    userStatus: 'active', // 用户状态：active/pending/approved/rejected
+    teacherInfo: {}, // 教师个人信息
+    showTeacherForm: false, // 是否显示教师信息表单
+    formData: {
+      name: '',
+      title: '',
+      specialty: '',
+      introduction: '',
+      avatar: '',
+      rating: 5,
+      studentCount: 0,
+      teachingAge: '',
+      contact: ''
+    }
   },
 
   onLoad() {
@@ -15,6 +28,7 @@ Page({
   onShow() {
     this.loadUserStats()
     this.checkUserRoleAndStatus()
+    this.loadTeacherInfo()
   },
 
   // 加载用户数据
@@ -48,6 +62,31 @@ Page({
         userRole: 'student',
         userStatus: 'active'
       })
+    }
+  },
+
+  // 加载教师信息
+  async loadTeacherInfo() {
+    if (this.data.userRole !== 'teacher') return
+    
+    try {
+      const userInfo = wx.getStorageSync('userInfo')
+      if (!userInfo || !userInfo._openid) return
+
+      const db = wx.cloud.database()
+      const res = await db.collection('teachers')
+        .where({
+          _openid: userInfo._openid
+        })
+        .get()
+
+      if (res.data.length > 0) {
+        this.setData({
+          teacherInfo: res.data[0]
+        })
+      }
+    } catch (error) {
+      console.error('加载教师信息失败:', error)
     }
   },
 
@@ -92,6 +131,15 @@ Page({
       console.error('加载统计信息失败:', error)
     }
   },
+
+  // 显示教师信息表单
+  showTeacherInfoForm() {
+    if (this.data.userRole !== 'teacher') return
+  
+    wx.navigateTo({
+      url: '/pages/teacher/personalInfoManage'
+    })
+  }, 
 
   // 跳转到我的订阅
   goToSubscriptions() {

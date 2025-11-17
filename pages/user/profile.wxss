@@ -1,5 +1,4 @@
 /* pages/user/profile.wxss */
-/* pages/my/index.wxss */
 .page-container {
   background: #f5f5f5;
   min-height: 100vh;
@@ -76,6 +75,16 @@
   border: 1rpx solid #ffb74d;
 }
 
+/* 已认证标识 */
+.approved-badge {
+  font-size: 20rpx;
+  color: #07c160;
+  background: #f0f9f4;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid #07c160;
+}
+
 /* 审核提示信息 */
 .audit-notice {
   background: #fff8e1;
@@ -121,6 +130,70 @@
 .stat-label {
   font-size: 24rpx;
   color: #666;
+}
+
+/* 教师信息卡片 */
+.teacher-info-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #1989fa;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  background: #f0f7ff;
+}
+
+.teacher-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  width: calc(50% - 10rpx);
+}
+
+.detail-item.full-width {
+  width: 100%;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #666;
+  min-width: 140rpx;
+}
+
+.detail-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+  flex: 1;
 }
 
 /* 菜单区域 */
@@ -185,4 +258,27 @@
 /* 点击效果 */
 .stat-item:active {
   opacity: 0.7;
+}
+
+.menu-item:active {
+  background-color: #f8f9fa;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .detail-item {
+    width: 100%;
+  }
+  
+  .page-container {
+    padding: 15rpx;
+  }
+  
+  .user-card {
+    padding: 30rpx 20rpx;
+  }
+  
+  .teacher-info-card {
+    padding: 25rpx 20rpx;
+  }
 }

@@ -1,5 +1,4 @@
 <!--pages/user/profile.wxml-->
-<!-- pages/my/index.wxml -->
 <view class="page-container">
   <!-- 用户信息卡片 -->
   <view class="user-card">
@@ -14,6 +13,10 @@
           <!-- 待审核标识 -->
           <text class="pending-badge" wx:if="{{userRole === 'teacher' && userStatus === 'pending'}}">
             待审核
+          </text>
+          <!-- 已认证标识 -->
+          <text class="approved-badge" wx:if="{{userRole === 'teacher' && userStatus === 'approved'}}">
+            已认证
           </text>
         </view>
       </view>
@@ -38,9 +41,51 @@
     </view>
   </view>
 
+  <!-- 教师信息展示 -->
+  <view class="teacher-info-card" wx:if="{{userRole === 'teacher' && teacherInfo.name}}">
+    <view class="card-header">
+      <text class="card-title">我的教师信息</text>
+      <view class="edit-btn" bindtap="showTeacherInfoForm">
+        <van-icon name="edit" size="16px" color="#1989fa" />
+        <text>编辑</text>
+      </view>
+    </view>
+    <view class="teacher-details">
+      <view class="detail-item">
+        <text class="detail-label">姓名：</text>
+        <text class="detail-value">{{teacherInfo.name}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">专长：</text>
+        <text class="detail-value">{{teacherInfo.specialty}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">评分：</text>
+        <text class="detail-value">{{teacherInfo.rating}}分</text>
+      </view>
+      <view class="detail-item">
+        <text class="detail-label">学生数：</text>
+        <text class="detail-value">{{teacherInfo.studentCount}}人</text>
+      </view>
+      <view class="detail-item full-width" wx:if="{{teacherInfo.introduction}}">
+        <text class="detail-label">个人介绍：</text>
+        <text class="detail-value">{{teacherInfo.introduction}}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 功能菜单 -->
   <view class="menu-section">
     <view class="menu-list">
+      <!-- 教师信息管理 -->
+      <view class="menu-item" wx:if="{{userRole === 'teacher'}}" bindtap="showTeacherInfoForm">
+        <view class="menu-icon">
+          <van-icon name="user-circle-o" size="20px" color="#7232dd" />
+        </view>
+        <text class="menu-text">教师信息管理</text>
+        <van-icon name="arrow" size="14px" color="#ccc" />
+      </view>
+
       <!-- 我的订阅 -->
       <navigator url="/pages/user/subscriptions/subscriptions" class="menu-item {{userRole === 'teacher' && userStatus === 'pending' ? 'disabled-menu' : ''}}">
         <view class="menu-icon">
