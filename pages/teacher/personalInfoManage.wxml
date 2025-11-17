@@ -1,0 +1,125 @@
+<!--pages/teacher/manage/manage.wxml-->
+<view class="page-container">
+  <view class="header">
+    <view class="header-title">教师信息管理</view>
+    <view class="header-subtitle">完善您的教师资料</view>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <view class="main-content">
+    <!-- 加载状态 -->
+    <view class="loading-container" wx:if="{{isLoading}}">
+      <view class="loading-text">加载教师信息中...</view>
+    </view>
+
+    <view class="form-content" wx:else>
+      <!-- 头像上传 -->
+      <view class="form-section">
+        <view class="section-title">头像</view>
+        <view class="avatar-upload" bindtap="chooseAvatar">
+          <image class="avatar-preview" src="{{formData.avatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+          <view class="avatar-mask">点击更换</view>
+        </view>
+      </view>
+
+      <!-- 基本信息 -->
+      <view class="form-section">
+        <view class="section-title">基本信息</view>
+        
+        <view class="form-item">
+          <view class="form-label">姓名</view>
+          <input 
+            class="form-input" 
+            placeholder="请输入真实姓名" 
+            value="{{formData.name}}"
+            data-field="name"
+            bindinput="onFormInput"
+          />
+        </view>
+        
+        <view class="form-item">
+          <view class="form-label">教学专长</view>
+          <input 
+            class="form-input" 
+            placeholder="例如：数学、英语、物理" 
+            value="{{formData.specialty}}"
+            data-field="specialty"
+            bindinput="onFormInput"
+          />
+        </view>
+      </view>
+
+      <!-- 教学信息 -->
+      <view class="form-section">
+        <view class="section-title">教学信息</view>
+        
+        <view class="form-item">
+          <view class="form-label">评分</view>
+          <input 
+            class="form-input" 
+            type="number" 
+            placeholder="1-5分" 
+            value="{{formData.rating}}"
+            data-field="rating"
+            bindinput="onNumberInput"
+            min="1"
+            max="5"
+          />
+        </view>
+        
+        <view class="form-item">
+          <view class="form-label">学生数量</view>
+          <input 
+            class="form-input" 
+            type="number" 
+            placeholder="学生数量" 
+            value="{{formData.studentCount}}"
+            data-field="studentCount"
+            bindinput="onNumberInput"
+          />
+        </view>
+      </view>
+
+      <!-- 联系信息 -->
+      <view class="form-section">
+        <view class="section-title">联系信息</view>
+        
+        <view class="form-item">
+          <view class="form-label">联系方式</view>
+          <input 
+            class="form-input" 
+            placeholder="微信/电话等" 
+            value="{{formData.contact}}"
+            data-field="contact"
+            bindinput="onFormInput"
+          />
+        </view>
+      </view>
+
+      <!-- 个人介绍 -->
+      <view class="form-section">
+        <view class="section-title">个人介绍</view>
+        
+        <view class="form-item">
+          <textarea 
+            class="form-textarea" 
+            placeholder="请简单介绍一下您的教学经验和特点..." 
+            value="{{formData.introduction}}"
+            data-field="introduction"
+            bindinput="onFormInput"
+            maxlength="200"
+          />
+          <view class="textarea-counter">{{formData.introduction ? formData.introduction.length : 0}}/200</view>
+        </view>
+      </view>
+
+      <!-- 添加一些空白区域确保可以滚动 -->
+      <view class="spacer" style="height: 50rpx;"></view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="footer">
+    <button class="submit-btn" bindtap="submitTeacherInfo">保存信息</button>
+  </view>
+</view>

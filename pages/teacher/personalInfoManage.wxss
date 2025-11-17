@@ -1,0 +1,199 @@
+/* pages/teacher/manage/manage.wxss */
+.page-container {
+  background: #f5f5f5;
+  min-height: 100vh;
+  height: 100vh; /* 确保容器有固定高度 */
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: white;
+  padding: 40rpx 30rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  flex-shrink: 0; /* 防止头部被压缩 */
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.header-subtitle {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200rpx;
+  background: #f5f5f5;
+  flex: 1; /* 占据剩余空间 */
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 主要内容区域 - 可滚动 */
+.main-content {
+  flex: 1;
+  overflow-y: auto; /* 启用垂直滚动 */
+  padding-bottom: 20rpx;
+}
+
+.form-content {
+  padding: 30rpx;
+  min-height: 100%; /* 确保内容区域有足够高度 */
+}
+
+.form-section {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.06);
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #1989fa;
+  background: white;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 200rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.form-textarea:focus {
+  border-color: #1989fa;
+  background: white;
+}
+
+.textarea-counter {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+
+/* 头像上传样式 */
+.avatar-upload {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2rpx dashed #ddd;
+  margin: 0 auto;
+}
+
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-mask {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 24rpx;
+  text-align: center;
+  padding: 12rpx;
+}
+
+/* 底部按钮 - 固定在底部 */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx;
+  background: white;
+  border-top: 1rpx solid #f0f0f0;
+  z-index: 100;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 88rpx;
+  background: #07c160;
+  color: white;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.submit-btn:active {
+  opacity: 0.8;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .header {
+    padding: 30rpx 20rpx 20rpx;
+  }
+  
+  .form-content {
+    padding: 20rpx;
+  }
+  
+  .form-section {
+    padding: 25rpx 20rpx;
+  }
+  
+  .footer {
+    padding: 20rpx;
+  }
+}
