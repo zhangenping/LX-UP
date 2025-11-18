@@ -187,7 +187,6 @@ Page({
         rating: formData.rating,
         studentCount: formData.studentCount,
         contact: formData.contact || '',
-        updateTime: db.serverDate()
       }
 
       if (checkRes.data.length > 0) {
@@ -205,10 +204,7 @@ Page({
         await db.collection('teachers').add({
           data: {
             ...teacherData,
-            _openid: userInfo._openid,
-            nickName: userInfo.nickName,
-            createTime: db.serverDate(),
-            status: 'pending'
+            status: 'approved'
           }
         })
         console.log('教师信息创建成功')
