@@ -113,6 +113,38 @@
         </view>
       </view>
 
+      <!-- 新增：课程管理 -->
+      <view class="form-section">
+        <view class="section-title">课程管理</view>
+        
+        <view class="course-management">
+          <button class="add-course-btn" bindtap="onShowCourseForm">+ 添加课程</button>
+          
+          <view class="course-list">
+            <view wx:for="{{courses}}" wx:key="_id" class="course-item">
+              <view class="course-info">
+                <view class="course-name">{{item.name}}</view>
+                <view class="course-details">
+                  <text class="course-price">¥{{item.price}}</text>
+                  <text class="course-hours">{{item.hours}}课时</text>
+                  <text class="course-level">{{item.level}}</text>
+                </view>
+                <view class="course-schedule">
+                  <text wx:for="{{item.schedule}}" wx:key="index" class="schedule-item">
+                    {{item.day}} {{item.time}}
+                  </text>
+                </view>
+              </view>
+              <button class="delete-course-btn" bindtap="onDeleteCourse" data-id="{{item._id}}" data-name="{{item.name}}">删除</button>
+            </view>
+          </view>
+          
+          <view wx:if="{{courses.length === 0}}" class="no-courses">
+            <text>暂无课程，点击上方按钮添加</text>
+          </view>
+        </view>
+      </view>
+
       <!-- 添加一些空白区域确保可以滚动 -->
       <view class="spacer" style="height: 50rpx;"></view>
     </view>
@@ -121,5 +153,110 @@
   <!-- 底部按钮 -->
   <view class="footer">
     <button class="submit-btn" bindtap="submitTeacherInfo">保存信息</button>
+  </view>
+
+  <!-- 添加课程弹窗 -->
+  <view wx:if="{{showCourseForm}}" class="course-modal">
+    <view class="modal-mask" bindtap="onHideCourseForm"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">添加课程</text>
+        <text class="modal-close" bindtap="onHideCourseForm">×</text>
+      </view>
+      
+      <view class="modal-body">
+        <view class="modal-form-item">
+          <view class="modal-label">课程名称</view>
+          <input 
+            class="modal-input" 
+            placeholder="请输入课程名称" 
+            value="{{courseFormData.name}}"
+            data-field="name"
+            bindinput="onCourseFormInput"
+          />
+        </view>
+        
+        <view class="modal-form-item">
+          <view class="modal-label">课程描述</view>
+          <textarea 
+            class="modal-textarea" 
+            placeholder="请输入课程描述" 
+            value="{{courseFormData.description}}"
+            data-field="description"
+            bindinput="onCourseFormInput"
+          />
+        </view>
+        
+        <view class="modal-form-row">
+          <view class="modal-form-item">
+            <view class="modal-label">价格(元)</view>
+            <input 
+              class="modal-input" 
+              type="number" 
+              placeholder="0" 
+              value="{{courseFormData.price}}"
+              data-field="price"
+              bindinput="onCourseNumberInput"
+            />
+          </view>
+          
+          <view class="modal-form-item">
+            <view class="modal-label">课时</view>
+            <input 
+              class="modal-input" 
+              type="number" 
+              placeholder="0" 
+              value="{{courseFormData.hours}}"
+              data-field="hours"
+              bindinput="onCourseNumberInput"
+            />
+          </view>
+        </view>
+        
+        <view class="modal-form-item">
+          <view class="modal-label">难度级别</view>
+          <picker 
+            value="{{courseFormData.level}}" 
+            range="{{['初级', '中级', '高级']}}"
+            data-field="level"
+            bindchange="onCourseFormInput"
+          >
+            <view class="modal-picker">{{courseFormData.level}}</view>
+          </picker>
+        </view>
+        
+        <view class="modal-form-item">
+          <view class="modal-label">上课时间</view>
+          <view wx:for="{{courseFormData.schedule}}" wx:key="index" class="schedule-input-group">
+            <picker 
+              value="{{item.day}}" 
+              range="{{['周一', '周二', '周三', '周四', '周五', '周六', '周日']}}"
+              data-index="{{index}}"
+              data-field="day"
+              bindchange="onScheduleInput"
+            >
+              <view class="schedule-picker">{{item.day}}</view>
+            </picker>
+            <input 
+              class="schedule-time-input" 
+              placeholder="时间如: 19:00-21:00" 
+              value="{{item.time}}"
+              data-index="{{index}}"
+              data-field="time"
+              bindinput="onScheduleInput"
+            />
+            <text 
+              wx:if="{{courseFormData.schedule.length > 1}}"
+              class="remove-schedule" 
+              bindtap="onRemoveSchedule"
+              data-index="{{index}}"
+            >删除</text>
+          </view>
+          <button class="add-schedule-btn" bindtap="onAddSchedule">添加时间段</button>
+        </view>
+        
+        <button class="modal-submit-btn" bindtap="onSubmitCourse">创建课程</button>
+      </view>
+    </view>
   </view>
 </view>
