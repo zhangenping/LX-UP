@@ -282,3 +282,170 @@
     padding: 25rpx 20rpx;
   }
 }
+
+/* 教师核销功能 */
+.verify-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25rpx;
+}
+
+.verify-card {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  border: 1rpx solid #bae7ff;
+}
+
+.verify-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.verify-text {
+  flex: 1;
+  margin-left: 20rpx;
+}
+
+.verify-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #1890ff;
+  margin-bottom: 8rpx;
+}
+
+.verify-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.verify-btn {
+  background: #07c160;
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  width: 100%;
+}
+
+.verify-btn:active {
+  opacity: 0.8;
+}
+
+/* 核销弹窗 */
+.verify-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 20rpx 20rpx 0 0;
+  padding: 40rpx 30rpx 30rpx;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.verify-input-section {
+  margin-bottom: 40rpx;
+}
+
+.input-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.verify-input {
+  width: 100%;
+  height: 100rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 25rpx;
+  font-size: 32rpx;
+  text-align: center;
+  letter-spacing: 4rpx;
+  font-weight: bold;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.verify-input:focus {
+  border-color: #07c160;
+  background: white;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 12rpx;
+  padding: 25rpx;
+  font-size: 28rpx;
+}
+
+.btn-confirm {
+  flex: 1;
+  background: #07c160;
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  padding: 25rpx;
+  font-size: 28rpx;
+}
+
+.btn-cancel:active,
+.btn-confirm:active {
+  opacity: 0.8;
+}

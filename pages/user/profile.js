@@ -8,6 +8,8 @@ Page({
     userStatus: 'active', // 用户状态：active/pending/approved/rejected
     teacherInfo: {}, // 教师个人信息
     showTeacherForm: false, // 是否显示教师信息表单
+    showVerifyModal: false, // 是否显示核销弹窗
+    verifyInput: '', // 核销码输入
     formData: {
       name: '',
       title: '',
@@ -110,8 +112,8 @@ Page({
       // 获取订阅数量
       const subscriptionRes = await db.collection('subscriptions')
         .where({
-          studentId: userInfo._openid,
-          status: 'active'
+          studentId: userInfo._openid
+          // status: 'active'
         })
         .get()
 
@@ -139,7 +141,148 @@ Page({
     wx.navigateTo({
       url: '/pages/teacher/personalInfoManage'
     })
-  }, 
+  },
+
+  // 新增：显示核销弹窗
+  showVerifyModal() {
+    if (this.data.userRole !== 'teacher' || this.data.userStatus !== 'approved') {
+      wx.showToast({
+        title: '只有认证教师才能核销',
+        icon: 'none'
+      })
+      return
+    }
+    
+    this.setData({
+      showVerifyModal: true,
+      verifyInput: ''
+    })
+  },
+
+  // 新增：隐藏核销弹窗
+  hideVerifyModal() {
+    this.setData({
+      showVerifyModal: false,
+      verifyInput: ''
+    })
+  },
+
+  // 新增：核销码输入处理
+  onVerifyInput(e) {
+    this.setData({
+      verifyInput: e.detail.value.trim()
+    })
+  },
+
+  // 新增：执行核销
+  async verifyCode() {
+    const { verifyInput, teacherInfo } = this.data
+    
+    if (!verifyInput) {
+      wx.showToast({
+        title: '请输入核销码',
+        icon: 'none'
+      })
+      return
+    }
+
+    wx.showLoading({
+      title: '核销中...'
+    })
+
+    try {
+      const db = wx.cloud.database()
+      const _ = db.command
+      
+      // 查找对应的核销码
+      const verifyRes = await db.collection('verify_codes')
+        .where({
+          code: verifyInput,
+          status: 'active'
+        })
+        .get()
+
+      if (verifyRes.data.length === 0) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '核销码无效或已使用',
+          icon: 'none'
+        })
+        return
+      }
+
+      const verifyCode = verifyRes.data[0]
+      
+      // 检查是否是当前教师的课程
+      const courseRes = await db.collection('courses')
+        .doc(verifyCode.courseId)
+        .get()
+
+      if (!courseRes.data || courseRes.data.teacherId !== teacherInfo._id) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '只能核销自己课程的核销码',
+          icon: 'none'
+        })
+        return
+      }
+
+      // 更新核销码状态
+      await db.collection('verify_codes').doc(verifyCode._id).update({
+        data: {
+          status: 'used',
+          usedTime: new Date(),
+          verifiedBy: teacherInfo._id,
+          verifiedByName: teacherInfo.name
+        }
+      })
+
+      // 更新订阅状态
+      await db.collection('subscriptions').doc(verifyCode.subscriptionId).update({
+        data: {
+          status: 'completed',
+          completedTime: new Date()
+        }
+      })
+
+      // 更新课程学生数量
+      await db.collection('courses').doc(verifyCode.courseId).update({
+        data: {
+          studentCount: _.inc(1)
+        }
+      })
+
+      // 更新教师学生数量
+      await db.collection('teachers').doc(teacherInfo._id).update({
+        data: {
+          studentCount: _.inc(1)
+        }
+      })
+
+      wx.hideLoading()
+      wx.showToast({
+        title: '核销成功',
+        icon: 'success'
+      })
+
+      // 关闭弹窗并重置输入
+      this.setData({
+        showVerifyModal: false,
+        verifyInput: ''
+      })
+
+      // 重新加载教师信息
+      this.loadTeacherInfo()
+
+    } catch (error) {
+      wx.hideLoading()
+      console.error('核销失败:', error)
+      wx.showToast({
+        title: '核销失败，请重试',
+        icon: 'none'
+      })
+    }
+  },
 
   // 跳转到我的订阅
   goToSubscriptions() {
@@ -152,7 +295,7 @@ Page({
       return
     }
     wx.navigateTo({
-      url: '/pages/my/subscriptions/subscriptions'
+      url: '/pages/user/subscriptions/subscriptions'
     })
   },
 
@@ -167,7 +310,7 @@ Page({
       return
     }
     wx.navigateTo({
-      url: '/pages/my/verify-codes/verify-codes'
+      url: '/pages/user/verify-codes/verify-codes'
     })
   }
 })
