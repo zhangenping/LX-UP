@@ -229,13 +229,13 @@
           <view class="modal-label">上课时间</view>
           <view wx:for="{{courseFormData.schedule}}" wx:key="index" class="schedule-input-group">
             <picker 
-              value="{{item.day}}" 
-              range="{{['周一', '周二', '周三', '周四', '周五', '周六', '周日']}}"
+              value="{{item.dayIndex}}" 
+              range="{{dayOptions}}"
               data-index="{{index}}"
               data-field="day"
               bindchange="onScheduleInput"
             >
-              <view class="schedule-picker">{{item.day}}</view>
+              <view class="schedule-picker">{{dayOptions[item.dayIndex]}}</view>
             </picker>
             <input 
               class="schedule-time-input" 
