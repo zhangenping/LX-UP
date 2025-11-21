@@ -26,7 +26,7 @@
           <view class="course-header">
             <text class="course-name">{{item.courseName}}</text>
             <view class="status-badge {{item.status}}">
-              {{item.status === 'active' ? '有效' : '已过期'}}
+              {{item.status === 'active' ? '有效' : '已使用'}}
             </view>
           </view>
           <view class="course-detail">

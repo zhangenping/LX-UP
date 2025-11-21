@@ -101,7 +101,7 @@
   color: #1890ff;
 }
 
-.status-badge.expired {
+.status-badge.completed {
   background: #fff2f0;
   color: #ff4d4f;
 }
