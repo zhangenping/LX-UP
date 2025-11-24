@@ -132,7 +132,28 @@
         <van-icon name="cross" size="20px" color="#999" bindtap="hideVerifyModal" />
       </view>
       <view class="modal-body">
-        <view class="verify-input-section">
+        <!-- 输入方式切换 -->
+        <view class="scan-type-tabs">
+          <view 
+            class="tab-item {{scanType === 'manual' ? 'active' : ''}}" 
+            data-type="manual"
+            bindtap="switchScanType"
+          >
+            <van-icon name="edit" size="16px" />
+            <text>手动输入</text>
+          </view>
+          <view 
+            class="tab-item {{scanType === 'scan' ? 'active' : ''}}" 
+            data-type="scan"
+            bindtap="switchScanType"
+          >
+            <van-icon name="scan" size="16px" />
+            <text>扫码核销</text>
+          </view>
+        </view>
+
+        <!-- 手动输入区域 -->
+        <view class="verify-input-section" wx:if="{{scanType === 'manual'}}">
           <text class="input-label">请输入学生提供的核销码</text>
           <input 
             class="verify-input" 
@@ -140,11 +161,47 @@
             value="{{verifyInput}}"
             bindinput="onVerifyInput"
             maxlength="20"
+            confirm-type="done"
           />
+          <view class="input-tips">输入完成后点击下方确认核销</view>
         </view>
+
+        <!-- 扫码区域 -->
+        <view class="scan-section" wx:if="{{scanType === 'scan'}}">
+          <view class="scan-container">
+            <van-icon name="scan" size="80rpx" color="#07c160" />
+            <text class="scan-title">请扫描核销码</text>
+            <text class="scan-desc">将二维码/条形码放入框内即可自动扫描</text>
+          </view>
+          <view class="scan-result" wx:if="{{verifyInput}}">
+            <text class="result-label">扫描结果：</text>
+            <text class="result-code">{{verifyInput}}</text>
+          </view>
+        </view>
+
         <view class="modal-actions">
           <button class="btn-cancel" bindtap="hideVerifyModal">取消</button>
-          <button class="btn-confirm" bindtap="verifyCode">确认核销</button>
+          <button 
+            class="btn-confirm" 
+            bindtap="verifyCode"
+            wx:if="{{scanType === 'manual' && verifyInput}}"
+          >
+            确认核销
+          </button>
+          <button 
+            class="btn-confirm disabled" 
+            wx:if="{{scanType === 'manual' && !verifyInput}}"
+            disabled
+          >
+            确认核销
+          </button>
+          <button 
+            class="btn-scan-again" 
+            bindtap="startScan"
+            wx:if="{{scanType === 'scan'}}"
+          >
+            重新扫码
+          </button>
         </view>
       </view>
     </view>
