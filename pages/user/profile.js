@@ -10,6 +10,7 @@ Page({
     showTeacherForm: false, // 是否显示教师信息表单
     showVerifyModal: false, // 是否显示核销弹窗
     verifyInput: '', // 核销码输入
+    scanType: 'manual', // manual-手动输入, scan-扫码
     formData: {
       name: '',
       title: '',
@@ -143,7 +144,7 @@ Page({
     })
   },
 
-  // 新增：显示核销弹窗
+  // 显示核销弹窗
   showVerifyModal() {
     if (this.data.userRole !== 'teacher' || this.data.userStatus !== 'approved') {
       wx.showToast({
@@ -155,11 +156,12 @@ Page({
     
     this.setData({
       showVerifyModal: true,
-      verifyInput: ''
+      verifyInput: '',
+      scanType: 'manual'
     })
   },
 
-  // 新增：隐藏核销弹窗
+  // 隐藏核销弹窗
   hideVerifyModal() {
     this.setData({
       showVerifyModal: false,
@@ -167,14 +169,82 @@ Page({
     })
   },
 
-  // 新增：核销码输入处理
+  // 切换输入方式
+  switchScanType(e) {
+    const type = e.currentTarget.dataset.type
+    this.setData({
+      scanType: type,
+      verifyInput: ''
+    })
+    
+    if (type === 'scan') {
+      this.startScan()
+    }
+  },
+
+  // 开始扫码
+  async startScan() {
+    try {
+      // 检查相机权限
+      const authRes = await wx.getSetting()
+      if (!authRes.authSetting['scope.camera']) {
+        // 没有权限，请求权限
+        await wx.authorize({
+          scope: 'scope.camera'
+        })
+      }
+
+      // 开始扫码
+      const scanRes = await wx.scanCode({
+        onlyFromCamera: true,
+        scanType: ['qrCode', 'barCode']
+      })
+
+      console.log('扫码结果:', scanRes)
+      
+      if (scanRes.result) {
+        this.setData({
+          verifyInput: scanRes.result
+        })
+        // 自动核销
+        this.verifyCode()
+      }
+
+    } catch (error) {
+      console.error('扫码失败:', error)
+      
+      if (error.errMsg.includes('auth deny')) {
+        wx.showModal({
+          title: '需要相机权限',
+          content: '扫码需要相机权限，请在设置中开启',
+          success: (res) => {
+            if (res.confirm) {
+              wx.openSetting()
+            } else {
+              // 用户拒绝授权，切换回手动输入
+              this.setData({ scanType: 'manual' })
+            }
+          }
+        })
+      } else if (error.errMsg.includes('scanCode fail')) {
+        wx.showToast({
+          title: '扫码失败，请重试',
+          icon: 'none'
+        })
+        // 扫码失败后自动切换回手动输入
+        this.setData({ scanType: 'manual' })
+      }
+    }
+  },
+
+  // 核销码输入处理
   onVerifyInput(e) {
     this.setData({
       verifyInput: e.detail.value.trim()
     })
   },
 
-  // 新增：执行核销
+  // 执行核销
   async verifyCode() {
     const { verifyInput, teacherInfo } = this.data
     
@@ -194,13 +264,30 @@ Page({
       const db = wx.cloud.database()
       const _ = db.command
       
+      console.log('开始核销，输入码:', verifyInput)
+      console.log('教师ID:', teacherInfo._id)
+
       // 查找对应的核销码
-      const verifyRes = await db.collection('verify_codes')
-        .where({
-          code: verifyInput,
-          status: 'active'
-        })
-        .get()
+      let verifyRes
+      try {
+        verifyRes = await db.collection('verify_codes')
+          .where({
+            code: verifyInput,
+            status: 'active'
+          })
+          .get()
+        console.log('verify_codes 查询结果:', verifyRes)
+      } catch (error) {
+        console.log('verify_codes 查询失败，尝试 subscriptions 表:', error)
+        // 如果 verify_codes 不存在，尝试在 subscriptions 表中查找
+        verifyRes = await db.collection('subscriptions')
+          .where({
+            verificationCode: verifyInput,
+            status: 'active'
+          })
+          .get()
+        console.log('subscriptions 查询结果:', verifyRes)
+      }
 
       if (verifyRes.data.length === 0) {
         wx.hideLoading()
@@ -211,12 +298,15 @@ Page({
         return
       }
 
-      const verifyCode = verifyRes.data[0]
-      
+      const verifyRecord = verifyRes.data[0]
+      console.log('找到核销记录:', verifyRecord)
+
       // 检查是否是当前教师的课程
       const courseRes = await db.collection('courses')
-        .doc(verifyCode.courseId)
+        .doc(verifyRecord.courseId || verifyRecord.course._id)
         .get()
+
+      console.log('课程信息:', courseRes.data)
 
       if (!courseRes.data || courseRes.data.teacherId !== teacherInfo._id) {
         wx.hideLoading()
@@ -227,30 +317,47 @@ Page({
         return
       }
 
-      // 更新核销码状态
-      await db.collection('verify_codes').doc(verifyCode._id).update({
-        data: {
-          status: 'used',
-          usedTime: new Date(),
-          verifiedBy: teacherInfo._id,
-          verifiedByName: teacherInfo.name
-        }
-      })
+      // 更新数据 - 根据不同的集合结构进行处理
+      if (verifyRes.data[0].collectionName === 'verify_codes' || verifyRecord.code) {
+        // 如果是 verify_codes 集合的结构
+        await db.collection('verify_codes').doc(verifyRecord._id).update({
+          data: {
+            status: 'used',
+            usedTime: new Date(),
+            verifiedBy: teacherInfo._id,
+            verifiedByName: teacherInfo.name
+          }
+        })
+        console.log('verify_codes 更新成功')
 
-      // 更新订阅状态
-      await db.collection('subscriptions').doc(verifyCode.subscriptionId).update({
-        data: {
-          status: 'completed',
-          completedTime: new Date()
-        }
-      })
+        // 更新订阅状态
+        await db.collection('subscriptions').doc(verifyRecord.subscriptionId).update({
+          data: {
+            status: 'completed',
+            completedTime: new Date()
+          }
+        })
+        console.log('subscriptions 更新成功')
+      } else {
+        // 如果是 subscriptions 集合的结构（核销码直接存储在 subscriptions 中）
+        await db.collection('subscriptions').doc(verifyRecord._id).update({
+          data: {
+            status: 'completed',
+            completedTime: new Date(),
+            verifiedBy: teacherInfo._id,
+            verifiedByName: teacherInfo.name
+          }
+        })
+        console.log('subscriptions 直接更新成功')
+      }
 
       // 更新课程学生数量
-      await db.collection('courses').doc(verifyCode.courseId).update({
+      await db.collection('courses').doc(verifyRecord.courseId || verifyRecord.course._id).update({
         data: {
           studentCount: _.inc(1)
         }
       })
+      console.log('课程学生数更新成功')
 
       // 更新教师学生数量
       await db.collection('teachers').doc(teacherInfo._id).update({
@@ -258,6 +365,7 @@ Page({
           studentCount: _.inc(1)
         }
       })
+      console.log('教师学生数更新成功')
 
       wx.hideLoading()
       wx.showToast({
@@ -278,7 +386,7 @@ Page({
       wx.hideLoading()
       console.error('核销失败:', error)
       wx.showToast({
-        title: '核销失败，请重试',
+        title: '核销失败: ' + error.message,
         icon: 'none'
       })
     }

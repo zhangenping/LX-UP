@@ -36,9 +36,9 @@ Page({
   
     async confirmRole() {
       if (!this.data.selectedRole) return;
-  
+    
       wx.showLoading({ title: '注册中...' });
-  
+    
       try {
         const res = await wx.cloud.callFunction({
           name: 'completeRegistration',
@@ -48,18 +48,32 @@ Page({
             role: this.data.selectedRole
           }
         });
-  
+    
         if (res.result.success) {
           const { user, token } = res.result;
           
           // 保存登录状态
           wx.setStorageSync('token', token);
           wx.setStorageSync('userInfo', user);
+          console.log('💾 存储状态:', {
+            tokenSaved: wx.getStorageSync('token') ? '成功' : '失败',
+            userInfoSaved: wx.getStorageSync('userInfo') ? '成功' : '失败'
+          });
+          // 清除临时用户信息
+          wx.removeStorageSync('tempUserInfo');
           
           wx.hideLoading();
           
-          // 根据角色和状态跳转
-          this.redirectAfterRegistration(user);
+          // 显示注册成功提示
+          wx.showToast({
+            title: '注册成功!',
+            icon: 'success'
+          });
+          
+          // 延迟跳转，让用户看到成功提示
+          setTimeout(() => {
+            this.redirectAfterRegistration(user);
+          }, 1500);
         } else {
           wx.showToast({
             title: res.result.message || '注册失败',
