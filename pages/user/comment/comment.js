@@ -18,6 +18,8 @@ Page({
 
   onLoad(options) {
     const subscription = JSON.parse(decodeURIComponent(options.subscription));
+    console.log('接收到的课程数据:', subscription); // 调试日志
+    
     this.setData({ 
       course: subscription 
     });
@@ -44,13 +46,23 @@ Page({
       
       if (res.data.length > 0) {
         const existingComment = res.data[0];
+        
+        // 更新标签选中状态
+        const updatedTags = this.data.tags.map(tag => ({
+          ...tag,
+          selected: existingComment.tags ? existingComment.tags.includes(tag.name) : false
+        }));
+        
         this.setData({
           rating: existingComment.rating,
           comment: existingComment.content,
           isAnonymous: existingComment.isAnonymous,
-          selectedTags: existingComment.tags || []
+          selectedTags: existingComment.tags || [],
+          tags: updatedTags  // 重要：更新tags数据，让界面显示选中状态
         });
+        
         console.log('加载已有评论:', existingComment);
+        console.log('更新后的标签状态:', updatedTags);
       }
     } catch (error) {
       console.error('检查评论状态失败:', error);
@@ -119,6 +131,15 @@ Page({
       course
     });
     
+    // 验证课程数据
+    if (!course.courseId) {
+      wx.showToast({
+        title: '课程信息不完整',
+        icon: 'none'
+      });
+      return;
+    }
+    
     if (!comment.trim()) {
       wx.showToast({
         title: '请填写评价内容',
@@ -149,11 +170,12 @@ Page({
         })
         .get();
 
+      // 构建评论数据，处理teacherId为空的情况
       const commentData = {
         courseId: course.courseId,
-        courseName: course.courseName,
-        teacherId: course.teacherId,
-        teacherName: course.teacherName,
+        courseName: course.courseName || '未知课程',
+        teacherId: course.teacherId || 'unknown_teacher', // 处理teacherId为空的情况
+        teacherName: course.teacherName || '未知老师',
         studentId: userInfo._openid,
         studentName: isAnonymous ? '匿名用户' : (userInfo.nickName || '微信用户'),
         studentAvatar: isAnonymous ? '' : (userInfo.avatarUrl || ''),
@@ -161,17 +183,19 @@ Page({
         content: comment.trim(),
         tags: selectedTags,
         isAnonymous: isAnonymous,
-        createdAt: new Date(),
         updatedAt: new Date()
       };
 
+      // 如果是更新评论，保留创建时间
       if (existingRes.data.length > 0) {
+        commentData.createdAt = existingRes.data[0].createdAt;
         // 更新现有评论
         await db.collection('comments').doc(existingRes.data[0]._id).update({
           data: commentData
         });
       } else {
         // 新增评论
+        commentData.createdAt = new Date();
         await db.collection('comments').add({
           data: commentData
         });
@@ -217,7 +241,7 @@ Page({
         await db.collection('courses').doc(courseId).update({
           data: {
             rating: parseFloat(averageRating),
-            commentCount: _.inc(1)
+            commentCount: commentsRes.data.length
           }
         });
       }

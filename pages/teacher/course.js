@@ -104,6 +104,7 @@ Page({
           courseId: this.data.course._id,
           courseName: this.data.course.name,
           teacherName: this.data.teacher.name,
+          teacherId: this.data.teacher._id,
           price: this.data.course.price,
           studentName: userInfo.nickName || '学员' // 传递学生姓名
         }

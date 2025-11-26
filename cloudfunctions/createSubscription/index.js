@@ -9,7 +9,7 @@ exports.main = async (event) => {
   const _ = db.command
   
   try {
-    const { courseId, courseName, teacherName, price } = event
+    const { courseId, courseName, teacherName, teacherId, price } = event
     const wxContext = cloud.getWXContext()
     const studentId = wxContext.OPENID
     
@@ -43,6 +43,7 @@ exports.main = async (event) => {
       courseId: courseId,
       courseName: courseName,
       teacherName: teacherName,
+      teacherId: teacherId,
       price: price,
       verificationCode: verifyCode,
       status: 'active',
