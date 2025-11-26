@@ -1,5 +1,10 @@
 <!--pages/teacher/detail.wxml-->
 <view class="container">
+  <!-- 添加返回按钮 -->
+  <view class="back-button" catchtap="onNavigateBack">
+    <van-icon name="arrow-left" size="20px" color="white" />
+  </view>
+
   <van-skeleton title avatar row="3" loading="{{loading}}">
     <view wx:if="{{teacher}}">
       <!-- 教师头部信息 -->
@@ -77,16 +82,65 @@
 
           <van-tab title="评价" name="reviews">
             <view class="tab-content">
+              <!-- 评价统计 -->
+              <view class="review-stats" wx:if="{{reviews.length > 0}}">
+                <view class="rating-overview">
+                  <text class="rating-score">{{teacher.rating || 5.0}}</text>
+                  <text class="rating-label">综合评分</text>
+                </view>
+                <view class="review-count">
+                  <text class="count-number">{{reviews.length}}</text>
+                  <text class="count-label">条评价</text>
+                </view>
+              </view>
+              
               <view wx:if="{{reviews.length === 0}}" class="empty-review">
+                <van-icon name="comment-o" size="80rpx" color="#ccc" />
                 <text class="empty-text">暂无评价</text>
+                <text class="empty-desc">快来发布第一条评价吧</text>
               </view>
               
               <block wx:for="{{reviews}}" wx:key="_id">
                 <view class="review-card">
                   <view class="review-header">
-                    <text class="reviewer-name">{{item.studentName}}</text>
-                    <text class="review-time">{{item.createTime}}</text>
+                    <view class="reviewer-info">
+                      <image 
+                        class="reviewer-avatar" 
+                        src="{{item.studentAvatar || '/images/default-avatar.png'}}" 
+                        wx:if="{{!item.isAnonymous && item.studentAvatar}}"
+                      />
+                      <image 
+                        class="reviewer-avatar" 
+                        src="/images/anonymous-avatar.png" 
+                        wx:else
+                      />
+                      <view class="reviewer-detail">
+                        <text class="reviewer-name">
+                          {{item.isAnonymous ? '匿名用户' : item.studentName}}
+                        </text>
+                        <view class="review-meta">
+                          <text class="course-name">{{item.courseName}}</text>
+                          <text class="review-time">{{item.createTime}}</text>
+                        </view>
+                      </view>
+                    </view>
+                    <view class="rating-display">
+                      <text class="rating-stars">
+                        <text class="star {{item.rating >= 1 ? 'active' : ''}}">★</text>
+                        <text class="star {{item.rating >= 2 ? 'active' : ''}}">★</text>
+                        <text class="star {{item.rating >= 3 ? 'active' : ''}}">★</text>
+                        <text class="star {{item.rating >= 4 ? 'active' : ''}}">★</text>
+                        <text class="star {{item.rating >= 5 ? 'active' : ''}}">★</text>
+                      </text>
+                      <text class="rating-value">{{item.rating}}.0</text>
+                    </view>
                   </view>
+                  
+                  <!-- 标签展示 -->
+                  <view class="review-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+                    <text class="review-tag" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+                  </view>
+                  
                   <view class="review-content">{{item.content}}</view>
                 </view>
               </block>

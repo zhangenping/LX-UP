@@ -15,12 +15,49 @@ page {
   flex-direction: column;
   width: 100vw;
   box-sizing: border-box;
+  position: relative;
+}
+
+/* 返回按钮样式 */
+.back-button {
+  position: fixed;
+  top: 60rpx;
+  left: 30rpx;
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.back-button:active {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
+}
+
+/* 安全区域适配 */
+@supports (top: constant(safe-area-inset-top)) {
+  .back-button {
+    top: calc(60rpx + constant(safe-area-inset-top));
+  }
+}
+
+@supports (top: env(safe-area-inset-top)) {
+  .back-button {
+    top: calc(60rpx + env(safe-area-inset-top));
+  }
 }
 
 /* 教师头部信息 */
 .teacher-header {
   background: transparent;
-  padding: 60rpx 30rpx 40rpx;
+  padding: 120rpx 30rpx 40rpx; /* 增加顶部内边距为返回按钮留出空间 */
   flex-shrink: 0;
   width: 100%;
   box-sizing: border-box;
@@ -306,33 +343,85 @@ page {
   flex-shrink: 0;
 }
 
-/* 评价卡片 - 确保宽度固定 */
+/* 评价统计 */
+.review-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.rating-overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-score {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ff6b35;
+  margin-bottom: 8rpx;
+}
+
+.rating-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.review-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.count-number {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.count-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 评价卡片样式优化 */
 .review-card {
   background: white;
   border-radius: 16rpx;
   padding: 32rpx;
   margin-bottom: 24rpx;
   border: 1rpx solid #f0f0f0;
-  width: 100%;
-  box-sizing: border-box;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
 }
 
 .review-header {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 20rpx;
-  width: 100%;
-}
-
-.reviewer-avatar {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  margin-right: 16rpx;
-  flex-shrink: 0;
 }
 
 .reviewer-info {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.reviewer-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.reviewer-detail {
   flex: 1;
   min-width: 0;
 }
@@ -342,24 +431,82 @@ page {
   font-weight: 500;
   color: #333;
   margin-bottom: 8rpx;
-  word-break: break-all;
+  display: block;
+}
+
+.review-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.course-name {
+  font-size: 24rpx;
+  color: #07c160;
+  background: #f0f9f4;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  align-self: flex-start;
 }
 
 .review-time {
   font-size: 22rpx;
   color: #999;
+}
+
+.rating-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   flex-shrink: 0;
+  margin-left: 20rpx;
+}
+
+.rating-stars {
+  font-size: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.rating-stars .star {
+  color: #ddd;
+  margin-right: 4rpx;
+}
+
+.rating-stars .star.active {
+  color: #ffd700;
+}
+
+.rating-value {
+  font-size: 24rpx;
+  color: #ff6b35;
+  font-weight: bold;
+}
+
+/* 评价标签 */
+.review-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.review-tag {
+  font-size: 22rpx;
+  color: #1890ff;
+  background: #e6f7ff;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid #91d5ff;
 }
 
 .review-content {
   font-size: 28rpx;
-  color: #666;
-  line-height: 1.5;
+  color: #333;
+  line-height: 1.6;
   word-break: break-all;
-  width: 100%;
 }
 
-/* 空状态 */
+/* 空状态优化 */
 .empty-course,
 .empty-review {
   display: flex;
@@ -371,6 +518,10 @@ page {
   height: 100%;
   min-height: 300rpx;
   width: 100%;
+}
+
+.empty-review .van-icon {
+  margin-bottom: 30rpx;
 }
 
 .empty-image {
@@ -447,4 +598,103 @@ page {
 /* 确保内容不被底部操作栏遮挡 */
 .tab-container {
   padding-bottom: 120rpx;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .teacher-header {
+    padding: 100rpx 20rpx 30rpx; /* 调整顶部内边距 */
+  }
+  
+  .back-button {
+    top: 40rpx;
+    left: 20rpx;
+    width: 70rpx;
+    height: 70rpx;
+  }
+  
+  .teacher-avatar {
+    width: 140rpx;
+    height: 140rpx;
+  }
+  
+  .teacher-name {
+    font-size: 36rpx;
+  }
+  
+  .tab-content {
+    padding: 20rpx;
+  }
+  
+  .course-card,
+  .review-card,
+  .info-card {
+    padding: 24rpx;
+  }
+  
+  .action-bar {
+    padding: 20rpx;
+  }
+}
+
+/* 加载状态优化 */
+.van-skeleton {
+  padding: 30rpx;
+}
+
+/* 评分星星动画 */
+.rating-stars .star {
+  transition: color 0.3s ease;
+}
+
+/* 卡片悬停效果 */
+.course-card:active,
+.review-card:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+}
+
+/* 按钮交互效果 */
+.action-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.back-button:active {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
+}
+
+/* 标签动画 */
+.review-tag,
+.tag,
+.info-tag {
+  transition: all 0.2s ease;
+}
+
+.review-tag:active,
+.tag:active,
+.info-tag:active {
+  transform: scale(0.95);
+}
+
+/* 滚动条样式 */
+.tab-content::-webkit-scrollbar {
+  width: 4rpx;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2rpx;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2rpx;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
