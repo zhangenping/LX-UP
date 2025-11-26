@@ -12,7 +12,7 @@
   <!-- 内容区域 -->
   <view class="content">
     <!-- 空状态 -->
-    <view wx:if="{{subscriptions.length === 0}}" class="empty-state">
+    <view wx:if="{{subscriptions.length === 0 && !loading}}" class="empty-state">
       <van-icon name="orders-o" size="80px" color="#ccc" />
       <text class="empty-text">暂无订阅课程</text>
       <text class="empty-desc">快去发现感兴趣的课程吧</text>
@@ -22,24 +22,34 @@
     <!-- 订阅列表 -->
     <view wx:else class="subscription-list">
       <block wx:for="{{subscriptions}}" wx:key="_id">
-        <view class="subscription-item" bindtap="onViewCourse" data-courseid="{{item.courseId}}">
-          <view class="course-header">
+        <view class="subscription-item">
+          <view class="course-header" bindtap="onViewCourse" data-courseid="{{item.courseId}}">
             <text class="course-name">{{item.courseName}}</text>
             <view class="status-badge {{item.status}}">
-              {{item.status === 'active' ? '有效' : '已使用'}}
+              {{item.status === 'active' ? '待使用' : '已使用'}}
             </view>
           </view>
-          <view class="course-detail">
+          <view class="course-detail" bindtap="onViewCourse" data-courseid="{{item.courseId}}">
             <text class="teacher-name">教师: {{item.teacherName}}</text>
             <text class="course-price">¥{{item.price}}</text>
           </view>
-          <view class="subscription-info">
+          <view class="subscription-info" bindtap="onViewCourse" data-courseid="{{item.courseId}}">
             <text class="subscribe-time">订阅时间: {{formatDate(item.subscribedAt)}}</text>
             <text class="expire-time">有效期至: {{formatDate(item.expiresAt)}}</text>
           </view>
           <view class="action-buttons">
             <button class="action-btn view-btn" bindtap="onViewCourse" data-courseid="{{item.courseId}}">查看课程</button>
-            <button class="action-btn verify-btn" bindtap="onViewVerifyCode" data-code="{{item.verificationCode}}">查看核销码</button>
+            <button class="action-btn verify-btn" catchtap="onViewVerifyCode" data-code="{{item.verificationCode}}">查看核销码</button>
+            
+            <!-- 评论按钮 -->
+            <button 
+              class="action-btn comment-btn {{item.hasCommented ? 'commented' : ''}}" 
+              catchtap="goToComment" 
+              data-subscription="{{item}}"
+              wx:if="{{item.canComment}}"
+            >
+              {{item.hasCommented ? '修改评价' : '评价课程'}}
+            </button>
           </view>
         </view>
       </block>

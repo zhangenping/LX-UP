@@ -1,0 +1,109 @@
+<!-- pages/user/comment/comment.wxml -->
+<view class="page-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="back-btn" bindtap="onNavigateBack">
+      <van-icon name="arrow-left" size="16px" color="#333" />
+      <text class="back-text">返回</text>
+    </view>
+    <text class="page-title">课程评价</text>
+  </view>
+
+  <!-- 课程信息 -->
+  <view class="course-card">
+    <view class="course-name">{{course.courseName}}</view>
+    <view class="teacher-info">教师：{{course.teacherName}}</view>
+  </view>
+
+  <!-- 评价内容 -->
+  <view class="comment-section">
+    <!-- 评分区域 -->
+    <view class="rating-section">
+      <text class="section-title">课程评分</text>
+      <view class="star-rating">
+        <view 
+          class="star {{rating >= 1 ? 'active' : ''}}" 
+          bindtap="setRating" 
+          data-rating="1"
+        >★</view>
+        <view 
+          class="star {{rating >= 2 ? 'active' : ''}}" 
+          bindtap="setRating" 
+          data-rating="2"
+        >★</view>
+        <view 
+          class="star {{rating >= 3 ? 'active' : ''}}" 
+          bindtap="setRating" 
+          data-rating="3"
+        >★</view>
+        <view 
+          class="star {{rating >= 4 ? 'active' : ''}}" 
+          bindtap="setRating" 
+          data-rating="4"
+        >★</view>
+        <view 
+          class="star {{rating >= 5 ? 'active' : ''}}" 
+          bindtap="setRating" 
+          data-rating="5"
+        >★</view>
+      </view>
+      <text class="rating-text">{{rating}}分</text>
+    </view>
+
+    <!-- 标签选择 -->
+    <view class="tags-section">
+      <text class="section-title">选择标签（可选）</text>
+      <view class="tags-container">
+        <view 
+          class="tag {{tag.selected ? 'selected' : ''}}"
+          wx:for="{{tags}}"
+          wx:for-item="tag"
+          wx:key="name"
+          bindtap="toggleTag"
+          data-tag="{{tag.name}}"
+        >
+          {{tag.name}}
+        </view>
+      </view>
+      <text class="tags-tip">已选择 {{selectedTags.length}}/3 个标签</text>
+    </view>
+
+    <!-- 评论内容 -->
+    <view class="comment-input-section">
+      <text class="section-title">详细评价</text>
+      <textarea 
+        class="comment-input" 
+        placeholder="请详细描述您的学习体验，至少10个字..."
+        value="{{comment}}"
+        bindinput="onCommentInput"
+        maxlength="500"
+        show-confirm-bar="{{false}}"
+      ></textarea>
+      <view class="word-count">{{comment.length}}/500</view>
+    </view>
+
+    <!-- 匿名选项 -->
+    <view class="anonymous-section">
+      <view class="anonymous-option">
+        <text class="option-text">匿名评价</text>
+        <switch 
+          checked="{{isAnonymous}}" 
+          bindchange="onAnonymousChange"
+          color="#07c160"
+        />
+      </view>
+      <text class="anonymous-tip">选择匿名后，您的姓名和头像将不会显示</text>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button 
+      class="submit-btn {{comment.length >= 10 ? 'active' : 'disabled'}}" 
+      bindtap="submitComment"
+      disabled="{{comment.length < 10}}"
+    >
+      {{comment.length >= 10 ? '提交评价' : '至少输入10个字'}}
+    </button>
+  </view>
+</view>

@@ -9,6 +9,11 @@ Page({
     this.loadSubscriptions()
   },
 
+  onShow() {
+    // 页面显示时重新加载数据，确保评论状态更新
+    this.loadSubscriptions()
+  },
+
   async loadSubscriptions() {
     try {
       const userInfo = wx.getStorageSync('userInfo')
@@ -27,10 +32,41 @@ Page({
         .orderBy('subscribedAt', 'desc')
         .get()
 
+      // 检查每个订阅的评论状态
+      const subscriptionsWithCommentStatus = await Promise.all(
+        res.data.map(async (subscription) => {
+          try {
+            // 检查是否已评论
+            const commentRes = await db.collection('comments')
+              .where({
+                courseId: subscription.courseId,
+                studentId: userInfo._openid
+              })
+              .get()
+            
+            return {
+              ...subscription,
+              hasCommented: commentRes.data.length > 0,
+              canComment: subscription.status === 'completed'
+            }
+          } catch (error) {
+            console.log('检查评论状态失败，默认设为未评论:', error)
+            // 如果comments集合不存在或查询失败，默认设为未评论
+            return {
+              ...subscription,
+              hasCommented: false,
+              canComment: subscription.status === 'completed'
+            }
+          }
+        })
+      )
+
       this.setData({
-        subscriptions: res.data,
+        subscriptions: subscriptionsWithCommentStatus,
         loading: false
       })
+
+      console.log('订阅列表加载完成:', subscriptionsWithCommentStatus)
 
     } catch (error) {
       console.error('加载订阅列表失败:', error)
@@ -76,6 +112,24 @@ Page({
           })
         }
       }
+    })
+  },
+
+  // 跳转到评论页面
+  goToComment(e) {
+    const subscription = e.currentTarget.dataset.subscription
+    
+    // 检查是否可以评论
+    if (!subscription.canComment) {
+      wx.showToast({
+        title: '课程完成后才能评价',
+        icon: 'none'
+      })
+      return
+    }
+    
+    wx.navigateTo({
+      url: `/pages/user/comment/comment?subscription=${encodeURIComponent(JSON.stringify(subscription))}`
     })
   },
 
