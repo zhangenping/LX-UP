@@ -24,11 +24,13 @@
   margin-left: 8rpx;
 }
 
-
 .page-title {
   font-size: 34rpx;
   font-weight: bold;
   color: #333;
+  flex: 1;
+  text-align: center;
+  margin-right: 120rpx; /* 平衡标题位置 */
 }
 
 .content {
@@ -102,8 +104,8 @@
 }
 
 .status-badge.completed {
-  background: #fff2f0;
-  color: #ff4d4f;
+  background: #f0f9f4;
+  color: #07c160;
 }
 
 .course-detail {
@@ -141,23 +143,48 @@
 
 .action-buttons {
   display: flex;
-  gap: 20rpx;
+  gap: 15rpx;
+  flex-wrap: wrap;
 }
 
 .action-btn {
   flex: 1;
+  min-width: 180rpx;
   padding: 20rpx;
   border: none;
   border-radius: 10rpx;
   font-size: 26rpx;
+  text-align: center;
 }
 
 .view-btn {
-  background: #f8f9fa;
+  background: #c5cdd4;
   color: #333;
 }
 
 .verify-btn {
+  background: #2e95fc;
+  color: white;
+}
+
+/* 评论按钮样式 */
+.comment-btn {
   background: #07c160;
   color: white;
+}
+
+.comment-btn.commented {
+  background: #fa966c;
+  color: white;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    min-width: auto;
+  }
 }

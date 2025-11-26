@@ -9,7 +9,8 @@
     "pages/user/profile",
     "pages/user/subscriptions/subscriptions",
     "pages/user/verify-codes/verify-codes",
-    "pages/teacher/personalInfoManage"
+    "pages/teacher/personalInfoManage",
+    "pages/user/comment/comment"
   ],
   "window": {
     "backgroundTextStyle": "light",
