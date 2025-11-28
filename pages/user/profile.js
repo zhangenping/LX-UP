@@ -11,6 +11,7 @@ Page({
     showVerifyModal: false, // 是否显示核销弹窗
     verifyInput: '', // 核销码输入
     scanType: 'manual', // manual-手动输入, scan-扫码
+    unreadReviewCount: 0, // 新增：未读评价数量
     formData: {
       name: '',
       title: '',
@@ -32,6 +33,7 @@ Page({
     this.loadUserStats()
     this.checkUserRoleAndStatus()
     this.loadTeacherInfo()
+    this.checkUnreadReviews() // 新增：检查未读评价
   },
 
   // 加载用户数据
@@ -91,6 +93,43 @@ Page({
     } catch (error) {
       console.error('加载教师信息失败:', error)
     }
+  },
+
+  // 新增：检查未读评价
+  async checkUnreadReviews() {
+    if (this.data.userRole !== 'teacher' || this.data.userStatus !== 'approved') return
+    
+    try {
+      const db = wx.cloud.database()
+      const res = await db.collection('comments')
+        .where({
+          teacherId: this.data.teacherInfo._id,
+          isRead: false  // 假设有已读状态字段
+        })
+        .count()
+      
+      this.setData({ 
+        unreadReviewCount: res.total 
+      })
+    } catch (error) {
+      console.error('检查未读评价失败:', error)
+      // 如果 comments 表没有 isRead 字段，可以忽略这个错误
+    }
+  },
+
+  // 新增：跳转到评价页面
+  navigateToReviews() {
+    if (!this.data.teacherInfo || !this.data.teacherInfo._id) {
+      wx.showToast({
+        title: '请先完善教师信息',
+        icon: 'none'
+      })
+      return
+    }
+    
+    wx.navigateTo({
+      url: `/pages/teacher/reviews?id=${this.data.teacherInfo._id}`
+    })
   },
 
   // 加载用户统计

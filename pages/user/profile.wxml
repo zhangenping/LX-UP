@@ -89,6 +89,21 @@
     </view>
   </view>
 
+  <!-- 新增：学生评价查看功能 -->
+  <view class="reviews-section" wx:if="{{userRole === 'teacher' && userStatus === 'approved'}}">
+    <view class="section-title">学生评价</view>
+    <view class="reviews-card">
+      <view class="reviews-content">
+        <van-icon name="comment-o" size="48rpx" color="#7232dd" />
+        <view class="reviews-text">
+          <text class="reviews-title">查看学生评价</text>
+          <text class="reviews-desc">了解学生对您课程的真实反馈</text>
+        </view>
+      </view>
+      <button class="reviews-btn" bindtap="navigateToReviews">查看评价</button>
+    </view>
+  </view>
+
   <!-- 功能菜单 -->
   <view class="menu-section">
     <view class="menu-list">
@@ -98,6 +113,16 @@
           <van-icon name="user-circle-o" size="20px" color="#7232dd" />
         </view>
         <text class="menu-text">教师信息管理</text>
+        <van-icon name="arrow" size="14px" color="#ccc" />
+      </view>
+
+      <!-- 新增：学生评价菜单项 -->
+      <view class="menu-item" wx:if="{{userRole === 'teacher' && userStatus === 'approved'}}" bindtap="navigateToReviews">
+        <view class="menu-icon">
+          <van-icon name="comment-o" size="20px" color="#07c160" />
+        </view>
+        <text class="menu-text">学生评价</text>
+        <view class="menu-badge" wx:if="{{unreadReviewCount > 0}}">{{unreadReviewCount}}</view>
         <van-icon name="arrow" size="14px" color="#ccc" />
       </view>
 

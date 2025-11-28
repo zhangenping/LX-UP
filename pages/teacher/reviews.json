@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "van-icon": "@vant/weapp/icon/index"
+  },
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#f5f5f5"
+}

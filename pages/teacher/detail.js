@@ -4,7 +4,7 @@ Page({
     teacher: null,
     activeTab: 'intro',
     courses: [],
-    reviews: [],
+    reviews: [], // 这里存储评价数据
     loading: true
   },
 
@@ -13,8 +13,12 @@ Page({
     if (teacherId) {
       this.loadTeacherDetail(teacherId)
       this.loadTeacherCourses(teacherId)
-      this.loadTeacherReviews(teacherId)
+      this.loadTeacherReviews(teacherId) // 加载评价数据
     }
+  },
+
+  onNavigateBack() {
+    wx.navigateBack()
   },
 
   async loadTeacherDetail(teacherId) {
@@ -54,23 +58,66 @@ Page({
     }
   },
 
+  // 修改：从 comments 集合加载评价数据
   async loadTeacherReviews(teacherId) {
     try {
       const db = wx.cloud.database()
-      const res = await db.collection('reviews')
+      const res = await db.collection('comments')
         .where({
           teacherId: teacherId
         })
-        .orderBy('createTime', 'desc')
-        .limit(10)
+        .orderBy('createdAt', 'desc') // 按创建时间倒序
+        .limit(20) // 限制数量
         .get()
 
+      console.log('加载到的评价数据:', res.data)
+
+      // 格式化评价数据
+      const reviews = res.data.map(comment => ({
+        _id: comment._id,
+        studentName: comment.studentName,
+        studentAvatar: comment.studentAvatar,
+        courseName: comment.courseName, // 显示课程名称
+        rating: comment.rating,
+        content: comment.content,
+        tags: comment.tags || [],
+        isAnonymous: comment.isAnonymous,
+        createTime: this.formatTime(comment.createdAt),
+        createdAt: comment.createdAt
+      }))
+
       this.setData({
-        reviews: res.data
+        reviews: reviews
       })
+
     } catch (error) {
       console.error('加载评价失败:', error)
+      // 如果 comments 集合不存在，显示空状态
+      this.setData({
+        reviews: []
+      })
     }
+  },
+
+  // 格式化时间
+  formatTime(dateString) {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    const now = new Date()
+    const diff = now - date
+    
+    // 如果是今天
+    if (date.toDateString() === now.toDateString()) {
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+    }
+    
+    // 如果是今年
+    if (date.getFullYear() === now.getFullYear()) {
+      return `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+    }
+    
+    // 其他情况
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
   },
 
   onTabChange(e) {
