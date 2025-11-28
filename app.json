@@ -10,7 +10,8 @@
     "pages/user/subscriptions/subscriptions",
     "pages/user/verify-codes/verify-codes",
     "pages/teacher/personalInfoManage",
-    "pages/user/comment/comment"
+    "pages/user/comment/comment",
+    "pages/teacher/reviews"
   ],
   "window": {
     "backgroundTextStyle": "light",

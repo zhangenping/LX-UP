@@ -1,0 +1,123 @@
+<!-- pages/teacher/reviews/reviews.wxml -->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="nav-area">
+      <view class="back-btn" bindtap="onNavigateBack">
+        <van-icon name="arrow-left" size="20px" color="#333" />
+        <text class="back-text">返回</text>
+      </view>
+      <text class="header-title">学生评价</text>
+    </view>
+  </view>
+
+  <!-- 主要内容区域 -->
+  <scroll-view class="main-content" scroll-y>
+    
+    <!-- 评价概览 -->
+    <view class="overview-section" wx:if="{{reviews.length > 0}}">
+      <view class="overview-card">
+        <!-- 左侧平均评分 -->
+        <view class="avg-rating">
+          <text class="avg-score">{{averageRating}}</text>
+          <text class="avg-total">/5分</text>
+          <view class="avg-stars">
+            <text class="star {{index < averageRating ? 'active' : ''}}" 
+                  wx:for="{{5}}" wx:key="index">★</text>
+          </view>
+        </view>
+        
+        <!-- 右侧评分分布 -->
+        <view class="rating-distribution">
+          <view class="dist-item" wx:for="{{ratingDistribution}}" wx:key="rating">
+            <text class="star-text">{{item.rating}}星</text>
+            <view class="progress-bar">
+              <view class="progress" style="width: {{item.percentage}}%"></view>
+            </view>
+            <text class="count">{{item.count}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评价列表 -->
+    <view class="reviews-section">
+      <view class="section-title">
+        <text>全部评价</text>
+        <text class="count-badge" wx:if="{{reviews.length > 0}}">{{reviews.length}}条</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{reviews.length === 0 && !loading}}">
+        <van-icon name="comment-o" size="120rpx" color="#ccc" />
+        <text class="empty-text">暂无评价</text>
+        <text class="empty-desc">期待学生的第一份评价</text>
+      </view>
+
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{loading && reviews.length === 0}}">
+        <van-loading size="24px" vertical>加载中...</van-loading>
+      </view>
+
+      <!-- 评价列表 -->
+      <view class="reviews-list" wx:if="{{reviews.length > 0}}">
+        <view class="review-item {{item.isRead ? '' : 'unread'}}" 
+              wx:for="{{reviews}}" wx:key="_id" 
+              wx:for-item="review">
+          
+          <!-- 用户信息行 -->
+          <view class="user-row">
+            <view class="user-info">
+              <image class="avatar" src="{{review.isAnonymous ? '/images/anonymous.png' : (review.studentAvatar || '/images/avatar.png')}}" />
+              <view class="user-details">
+                <text class="username">{{review.isAnonymous ? '匿名用户' : (review.studentName || '微信用户')}}</text>
+                <text class="course">{{review.courseName || '未知课程'}}</text>
+              </view>
+            </view>
+            <view class="rating-badge">
+              <text class="rating-text">{{review.rating}}.0</text>
+              <view class="stars-small">
+                <!-- 修复单个评价的星星点亮逻辑 -->
+                <text class="star-small {{index < review.rating ? 'active' : 'inactive'}}" 
+                      wx:for="{{5}}" wx:key="index">★</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 评价内容 -->
+          <view class="review-content">
+            {{review.content}}
+          </view>
+
+          <!-- 标签和时间 -->
+          <view class="review-footer">
+            <view class="tags" wx:if="{{review.tags && review.tags.length > 0}}">
+              <text class="tag" wx:for="{{review.tags}}" wx:key="*this">{{item}}</text>
+            </view>
+            <view class="time-actions">
+              <text class="time">{{review.createTime}}</text>
+              <button class="read-btn {{review.isRead ? 'read' : ''}}" 
+                      wx:if="{{!review.isRead}}" 
+                      bindtap="markAsRead" 
+                      data-id="{{review._id}}">
+                标记已读
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore && reviews.length > 0}}">
+        <button class="load-btn" bindtap="loadMoreReviews" disabled="{{loading}}">
+          {{loading ? '加载中...' : '加载更多'}}
+        </button>
+      </view>
+      
+      <!-- 没有更多数据 -->
+      <view class="no-more" wx:if="{{!hasMore && reviews.length > 0}}">
+        <text>没有更多评价了</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

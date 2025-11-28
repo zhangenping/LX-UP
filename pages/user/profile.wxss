@@ -347,6 +347,63 @@
   opacity: 0.8;
 }
 
+/* 学生评价功能样式 */
+.reviews-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+}
+
+.reviews-card {
+  background: linear-gradient(135deg, #f9f0ff 0%, #f3e5f5 100%);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  border: 1rpx solid #e1bee7;
+}
+
+.reviews-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.reviews-text {
+  flex: 1;
+  margin-left: 20rpx;
+}
+
+.reviews-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #7232dd;
+  margin-bottom: 8rpx;
+}
+
+.reviews-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.reviews-btn {
+  background: #7232dd;
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  width: 100%;
+}
+
+.reviews-btn:active {
+  opacity: 0.8;
+}
+
 /* 核销弹窗 */
 .verify-modal {
   position: fixed;
