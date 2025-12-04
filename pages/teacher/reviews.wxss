@@ -221,11 +221,6 @@
   transition: all 0.3s;
 }
 
-.review-item.unread {
-  border-left: 6rpx solid #07c160;
-  background: #f8fff8;
-}
-
 /* 用户信息行 */
 .user-row {
   display: flex;
@@ -273,27 +268,33 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  min-width: 80rpx;
 }
 
 .rating-text {
   font-size: 28rpx;
   font-weight: bold;
   color: #ff6b35;
-  margin-bottom: 8rpx;
+  margin-bottom: 4rpx;
 }
 
+/* 单个评价的星星样式 */
 .stars-small {
   display: flex;
+  justify-content: flex-end;
 }
 
-.stars-small .star-small {
+.star-small {
   font-size: 20rpx;
-  color: #ddd;
-  margin: 0 1rpx;
+  margin: 0 2rpx;
 }
 
-.stars-small .star-small.active {
+.star-small.active {
   color: #ffd700;
+}
+
+.star-small.inactive {
+  color: #ddd;
 }
 
 /* 评价内容 */
@@ -302,6 +303,7 @@
   line-height: 1.6;
   color: #333;
   margin-bottom: 24rpx;
+  word-break: break-word;
 }
 
 /* 评价底部 */
@@ -328,32 +330,13 @@
 
 .time-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 
 .time {
   font-size: 24rpx;
   color: #999;
-}
-
-.read-btn {
-  background: #07c160;
-  color: white;
-  border: none;
-  border-radius: 8rpx;
-  padding: 8rpx 16rpx;
-  font-size: 22rpx;
-  transition: all 0.3s;
-}
-
-.read-btn.read {
-  background: #ccc;
-  color: #999;
-}
-
-.read-btn:active {
-  opacity: 0.8;
 }
 
 /* 加载更多 */
@@ -386,4 +369,82 @@
   padding: 40rpx 0;
   color: #999;
   font-size: 26rpx;
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+  .overview-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .avg-rating {
+    padding-right: 0;
+    padding-bottom: 40rpx;
+    border-right: none;
+    border-bottom: 1rpx solid #f0f0f0;
+    margin-bottom: 40rpx;
+    min-width: auto;
+  }
+  
+  .rating-distribution {
+    padding-left: 0;
+  }
+  
+  .user-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .rating-badge {
+    align-items: flex-start;
+    margin-top: 16rpx;
+  }
+  
+  .stars-small {
+    justify-content: flex-start;
+  }
+}
+
+/* 优化动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.review-item {
+  animation: fadeIn 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.review-item:nth-child(odd) {
+  animation-delay: 0.05s;
+}
+
+.review-item:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+/* 优化滚动条样式 */
+scroll-view ::-webkit-scrollbar {
+  width: 4rpx;
+}
+
+scroll-view ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+scroll-view ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4rpx;
+}
+
+scroll-view ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
