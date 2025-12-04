@@ -13,7 +13,7 @@
           <view class="avatar-section">
             <image class="teacher-avatar" src="{{teacher.avatar}}" mode="aspectFill" />
             <view class="avatar-badge">
-              <text class="rating-text">{{teacher.rating || 5.0}}</text>
+              <text class="rating-text">{{displayRating}}</text>
             </view>
           </view>
           <view class="teacher-basic-info">
@@ -84,8 +84,8 @@
             <view class="tab-content">
               <!-- 评价统计 -->
               <view class="review-stats" wx:if="{{reviews.length > 0}}">
-                <view class="rating-overview">
-                  <text class="rating-score">{{teacher.rating || 5.0}}</text>
+                <view class="rating-overview">                  
+                  <text class="rating-score">{{displayRating}}</text>
                   <text class="rating-label">综合评分</text>
                 </view>
                 <view class="review-count">
