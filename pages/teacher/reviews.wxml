@@ -61,7 +61,7 @@
 
       <!-- 评价列表 -->
       <view class="reviews-list" wx:if="{{reviews.length > 0}}">
-        <view class="review-item {{item.isRead ? '' : 'unread'}}" 
+        <view class="review-item" 
               wx:for="{{reviews}}" wx:key="_id" 
               wx:for-item="review">
           
@@ -77,7 +77,6 @@
             <view class="rating-badge">
               <text class="rating-text">{{review.rating}}.0</text>
               <view class="stars-small">
-                <!-- 修复单个评价的星星点亮逻辑 -->
                 <text class="star-small {{index < review.rating ? 'active' : 'inactive'}}" 
                       wx:for="{{5}}" wx:key="index">★</text>
               </view>
@@ -96,12 +95,6 @@
             </view>
             <view class="time-actions">
               <text class="time">{{review.createTime}}</text>
-              <button class="read-btn {{review.isRead ? 'read' : ''}}" 
-                      wx:if="{{!review.isRead}}" 
-                      bindtap="markAsRead" 
-                      data-id="{{review._id}}">
-                标记已读
-              </button>
             </view>
           </view>
         </view>

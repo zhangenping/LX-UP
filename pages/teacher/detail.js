@@ -4,8 +4,10 @@ Page({
     teacher: null,
     activeTab: 'intro',
     courses: [],
-    reviews: [], // 这里存储评价数据
-    loading: true
+    reviews: [], 
+    averageRating: 0, 
+    loading: true,
+    displayRating: '0.0'
   },
 
   onLoad(options) {
@@ -66,8 +68,8 @@ Page({
         .where({
           teacherId: teacherId
         })
-        .orderBy('createdAt', 'desc') // 按创建时间倒序
-        .limit(20) // 限制数量
+        .orderBy('createdAt', 'desc')
+        .limit(20)
         .get()
 
       console.log('加载到的评价数据:', res.data)
@@ -77,8 +79,8 @@ Page({
         _id: comment._id,
         studentName: comment.studentName,
         studentAvatar: comment.studentAvatar,
-        courseName: comment.courseName, // 显示课程名称
-        rating: comment.rating,
+        courseName: comment.courseName,
+        rating: Number(comment.rating) || 0, // 确保是数字
         content: comment.content,
         tags: comment.tags || [],
         isAnonymous: comment.isAnonymous,
@@ -86,17 +88,39 @@ Page({
         createdAt: comment.createdAt
       }))
 
+      // 计算平均评分
+      const averageRating = this.calculateAverageRating(reviews)
+      const displayRating = averageRating.toFixed(1)
       this.setData({
-        reviews: reviews
+        reviews: reviews,
+        averageRating: averageRating, // 设置平均评分
+        displayRating:displayRating
       })
 
     } catch (error) {
       console.error('加载评价失败:', error)
-      // 如果 comments 集合不存在，显示空状态
       this.setData({
-        reviews: []
+        reviews: [],
+        averageRating: 0,
+        displayRating: '0.0'
       })
     }
+  },
+
+  // 新增：计算平均评分的方法
+  calculateAverageRating(reviews) {
+    if (!reviews || reviews.length === 0) {
+      return 0
+    }
+
+    // 计算总分
+    const totalRating = reviews.reduce((sum, review) => {
+      return sum + (review.rating || 0)
+    }, 0)
+
+    // 计算平均值，保留一位小数
+    const average = totalRating / reviews.length
+    return parseFloat(average.toFixed(1))
   },
 
   // 格式化时间

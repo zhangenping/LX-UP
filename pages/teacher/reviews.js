@@ -29,7 +29,7 @@ Page({
     wx.navigateBack()
   },
 
-  // 加载评价数据
+  // 加载评价数据 - 自动标记为已读
   async loadReviews() {
     if (this.data.loading) return
     
@@ -39,6 +39,7 @@ Page({
       const db = wx.cloud.database()
       const skip = this.data.currentPage * this.data.pageSize
       
+      // 1. 获取评价数据
       const res = await db.collection('comments')
         .where({ teacherId: this.data.teacherId })
         .orderBy('createdAt', 'desc')
@@ -46,18 +47,27 @@ Page({
         .limit(this.data.pageSize)
         .get()
 
-      const newReviews = res.data.map(comment => ({
-        _id: comment._id,
-        studentName: comment.studentName,
-        studentAvatar: comment.studentAvatar,
-        courseName: comment.courseName || '未知课程',
-        rating: comment.rating,
-        content: comment.content,
-        tags: comment.tags || [],
-        isAnonymous: comment.isAnonymous,
-        isRead: comment.isRead || false,
-        createTime: this.formatTime(comment.createdAt)
-      }))
+      const newReviews = res.data.map(comment => {
+        // 确保 rating 是数字类型
+        const rating = Number(comment.rating) || 0
+        
+        // 查看页面时自动标记为已读，直接在前端显示已读状态
+        return {
+          _id: comment._id,
+          studentName: comment.studentName,
+          studentAvatar: comment.studentAvatar,
+          courseName: comment.courseName || '未知课程',
+          rating: rating,
+          content: comment.content,
+          tags: comment.tags || [],
+          isAnonymous: comment.isAnonymous,
+          isRead: true, // 直接设置为已读
+          createTime: this.formatTime(comment.createdAt)
+        }
+      })
+
+      // 2. 批量更新数据库中的已读状态
+      await this.markAllAsRead(res.data)
 
       const allReviews = this.data.currentPage === 0 ? newReviews : [...this.data.reviews, ...newReviews]
       
@@ -77,16 +87,70 @@ Page({
     }
   },
 
+  // 批量标记所有评价为已读
+  async markAllAsRead(comments) {
+    try {
+      const db = wx.cloud.database()
+      const _ = db.command
+      
+      // 创建批量更新操作
+      const updatePromises = comments
+        .filter(comment => !comment.isRead) // 只更新未读的
+        .map(comment => 
+          db.collection('comments').doc(comment._id).update({
+            data: { 
+              isRead: true, 
+              readAt: new Date() 
+            }
+          })
+        )
+
+      // 并行执行所有更新
+      if (updatePromises.length > 0) {
+        await Promise.all(updatePromises)
+        console.log(`已批量标记 ${updatePromises.length} 条评价为已读`)
+      }
+
+      // 通知上级页面更新未读数量
+      this.notifyParentPage()
+
+    } catch (error) {
+      console.error('批量标记已读失败:', error)
+      // 即使失败也不影响前端显示，继续执行
+    }
+  },
+
+  // 通知上级页面更新未读状态
+  notifyParentPage() {
+    try {
+      const pages = getCurrentPages()
+      if (pages.length > 1) {
+        const prevPage = pages[pages.length - 2]
+        // 如果有更新未读数量的方法就调用
+        if (prevPage.updateUnreadCount) {
+          prevPage.updateUnreadCount()
+        }
+        // 或者直接更新数据
+        if (prevPage.setData) {
+          prevPage.setData({
+            'teacherInfo.unreadCount': 0
+          })
+        }
+      }
+    } catch (error) {
+      console.error('通知上级页面失败:', error)
+    }
+  },
+
   // 计算统计信息
   calculateStats(reviews) {
     if (reviews.length === 0) return
 
-    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
-    // 确保 averageRating 是数字类型
+    const totalRating = reviews.reduce((sum, review) => sum + (Number(review.rating) || 0), 0)
     const averageRating = parseFloat((totalRating / reviews.length).toFixed(1))
 
     const ratingDistribution = this.data.ratingDistribution.map(item => {
-      const count = reviews.filter(review => review.rating === item.rating).length
+      const count = reviews.filter(review => Number(review.rating) === item.rating).length
       const percentage = (count / reviews.length) * 100
       return { ...item, count, percentage }
     })
@@ -120,38 +184,7 @@ Page({
     return `${date.getFullYear()}年${(date.getMonth() + 1)}月${date.getDate()}日`
   },
 
-  // 标记为已读
-  async markAsRead(e) {
-    const reviewId = e.currentTarget.dataset.id
-    if (!reviewId) return
-
-    try {
-      const db = wx.cloud.database()
-      await db.collection('comments').doc(reviewId).update({
-        data: { isRead: true, readAt: new Date() }
-      })
-
-      const reviews = this.data.reviews.map(review => 
-        review._id === reviewId ? { ...review, isRead: true } : review
-      )
-
-      this.setData({ reviews })
-      wx.showToast({ title: '标记已读', icon: 'success' })
-
-      // 通知上级页面更新
-      const pages = getCurrentPages()
-      if (pages.length > 1) {
-        const prevPage = pages[pages.length - 2]
-        if (prevPage.checkUnreadReviews) prevPage.checkUnreadReviews()
-      }
-
-    } catch (error) {
-      console.error('标记已读失败:', error)
-      wx.showToast({ title: '操作失败', icon: 'none' })
-    }
-  },
-
-  // 加载更多
+  // 加载更多（已移除 markAsRead 方法）
   loadMoreReviews() {
     if (this.data.hasMore && !this.data.loading) {
       this.loadReviews()
