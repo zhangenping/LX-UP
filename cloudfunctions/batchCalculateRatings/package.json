@@ -1,0 +1,9 @@
+{
+    "name": "batchCalculateRatings",
+    "version": "1.0.0",
+    "description": "计算平均评价值",
+    "main": "index.js",
+    "dependencies": {
+      "wx-server-sdk": "~2.6.3"
+    }
+  }
