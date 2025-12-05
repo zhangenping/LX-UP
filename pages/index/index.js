@@ -6,40 +6,40 @@ Page({
   },
 
   onLoad() {
-    this.loadTeachers()
+    this.loadTeachersWithCloudFunction()
   },
 
   onShow() {
     // 页面显示时刷新数据
-    this.loadTeachers()
+    this.loadTeachersWithCloudFunction()
   },
 
-  async loadTeachers() {
+  async loadTeachersWithCloudFunction() {
     try {
       this.setData({ loading: true })
       
-      const db = wx.cloud.database()
-      const res = await db.collection('teachers')
-        .where({
-          status: 'approved'  // 只显示已审核通过的老师
-        })
-        .field({
-          name: true,
-          avatar: true,
-          title: true,
-          specialty: true,
-          rating: true,
-          studentCount: true
-        })
-        .get()
-
-      this.setData({
-        teachers: res.data,
-        loading: false
+      // 调用云函数批量计算评分
+      const res = await wx.cloud.callFunction({
+        name: 'batchCalculateRatings'
       })
+
+      console.log('云函数返回数据:', res.result)
+
+      if (res.result.success) {
+        this.setData({
+          teachers: res.result.data,
+          loading: false
+        })
+      } else {
+        throw new Error(res.result.message || '加载失败')
+      }
+
     } catch (error) {
       console.error('加载教师列表失败:', error)
-      this.setData({ loading: false })
+      this.setData({ 
+        teachers: [],
+        loading: false 
+      })
       wx.showToast({
         title: '加载失败',
         icon: 'none'
