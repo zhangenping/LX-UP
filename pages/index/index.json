@@ -1,3 +1,5 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "half-rate-star": "/components/half-rate-star/half-rate-star"
+  }
 }

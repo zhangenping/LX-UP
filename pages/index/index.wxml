@@ -26,7 +26,7 @@
             </view>
             
             <view class="teacher-footer">
-              <van-rate value="{{item.rating || 5}}" size="24" readonly />
+              <half-rate-star value="{{item.rating || 5}}" size="24" readonly />
               <view class="action-btn">
                 <text>查看详情</text>
               </view>

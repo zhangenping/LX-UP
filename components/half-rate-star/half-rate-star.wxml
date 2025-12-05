@@ -1,0 +1,21 @@
+<!-- components/half-rate-star/half-rate-star.wxml -->
+<view class="half-rate-star">
+  <!-- 星星容器 -->
+  <view class="stars-container">
+    <!-- 遍历5颗星 -->
+    <view class="star-item" wx:for="{{starsArray}}" wx:key="index">
+      <!-- 底层灰色星星（全颗） -->
+      <view class="star-bg">★</view>
+      <!-- 上层彩色星星，根据评分显示相应宽度 -->
+      <view 
+        class="star-fill {{item.isHalf ? 'half' : 'full'}}" 
+        style="width: {{item.fillWidth}}%; color: {{color}}"
+      >
+        ★
+      </view>
+    </view>
+  </view>
+  
+  <!-- 显示评分数值（可选） -->
+  <text class="score-text" wx:if="{{showScore}}">{{value.toFixed(1)}}</text>
+</view>
