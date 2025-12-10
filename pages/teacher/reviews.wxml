@@ -21,10 +21,13 @@
         <view class="avg-rating">
           <text class="avg-score">{{averageRating}}</text>
           <text class="avg-total">/5分</text>
-          <view class="avg-stars">
-            <text class="star {{index < averageRating ? 'active' : ''}}" 
-                  wx:for="{{5}}" wx:key="index">★</text>
-          </view>
+          <!-- 修改这里：使用半颗星组件替换原来的星星 -->
+          <half-rate-star 
+            value="{{averageRating}}" 
+            size="32" 
+            show-score="{{false}}"
+            readonly="{{true}}"
+          />
         </view>
         
         <!-- 右侧评分分布 -->
