@@ -1,4 +1,10 @@
+<!-- pages/login/phone-binding.wxml -->
 <view class="phone-binding-container">
+  <!-- 1. 图片背景层 -->
+  <image class="background-image" src="../../images/binding_bg.png" mode="aspectFill"></image>
+  <view class="background-mask"></view>
+
+  <!-- 3. 以下是原有的所有内容层 -->
   <!-- 进度指示 -->
   <view class="progress-steps">
     <view class="step active">
@@ -17,7 +23,7 @@
 
   <!-- 用户信息展示 -->
   <view class="user-info-card">
-    <image class="user-avatar" src="{{userInfo.avatarUrl}}"></image>
+    <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
     <text class="user-nickname">{{userInfo.nickName}}</text>
     <text class="welcome-text">欢迎使用学习平台</text>
   </view>
@@ -30,20 +36,26 @@
     <view class="input-group">
       <view class="input-item">
         <text class="input-label">手机号</text>
-        <input 
-          class="phone-input" 
-          type="number" 
-          placeholder="请输入手机号码" 
-          maxlength="11"
-          value="{{phoneNumber}}"
-          bindinput="onPhoneInput"
-        />
+         <view class="input-with-icon"> <!-- 新增一个容器包裹图标和输入框 -->
+          <text class="input-icon iconfont"></text>      
+          <input 
+            class="phone-input" 
+            type="number" 
+            placeholder="请输入手机号码" 
+            maxlength="11"
+            value="{{phoneNumber}}"
+            bindinput="onPhoneInput"
+          />
+        </view>
       </view>
 
       <view class="input-item">
         <text class="input-label">验证码</text>
+        
         <view class="verify-code-group">
-          <input 
+          <view class="input-with-icon">
+            <text class="input-icon iconfont"></text>
+            <input 
             class="code-input" 
             type="number" 
             placeholder="请输入验证码" 
@@ -51,6 +63,8 @@
             value="{{verifyCode}}"
             bindinput="onCodeInput"
           />
+        </view>
+          
           <button 
             class="get-code-btn {{canGetCode ? '' : 'disabled'}}" 
             bindtap="getVerifyCode"
@@ -71,7 +85,7 @@
     </button>
   </view>
 
-  <!-- 跳过提示（可选） -->
+  <!-- 跳过提示 -->
   <view class="skip-tip" bindtap="showSkipConfirm">
     <text>暂时跳过？</text>
   </view>
