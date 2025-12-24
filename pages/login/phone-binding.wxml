@@ -2,7 +2,7 @@
 <view class="phone-binding-container">
   <!-- 1. 图片背景层 -->
   <image class="background-image" src="../../images/binding_bg.png" mode="aspectFill"></image>
-  <view class="background-mask"></view>
+  <!-- <view class="background-mask"></view> -->
 
   <!-- 3. 以下是原有的所有内容层 -->
   <!-- 进度指示 -->
