@@ -30,7 +30,7 @@ exports.main = async () => {
     const teachers = [
       {
         name: "张老师",
-        avatar: "https://example.com/teacher1.jpg",
+        avatar: "/images/default-avatar.png",
         title: "高级数学教师",
         introduction: "10年教学经验，擅长启发式教学",
         specialty: "初中数学、奥数辅导",
@@ -42,7 +42,7 @@ exports.main = async () => {
       },
       {
         name: "李老师", 
-        avatar: "https://example.com/teacher2.jpg",
+        avatar: "/images/default-avatar.png",
         title: "英语特级教师",
         introduction: "留学归国，纯正美式发音",
         specialty: "英语口语、雅思托福",
