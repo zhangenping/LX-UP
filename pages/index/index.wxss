@@ -4,6 +4,53 @@
   background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
+  /* 如果轮播图贴顶，可能需要调整整体布局 */
+  padding-top: 0; /* 确保容器没有顶部内边距 */
+}
+
+/* ===== 轮播图板块 ===== */
+.banner-section {
+  width: 100%;
+  background: white;
+  /* 移除原有的顶部内边距，只保留左右和底部 */
+  padding: 0 0 20rpx; /* 上:0, 左右:30, 下:20 */
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+  /* 安全区域适配 - 直接使用环境变量，不加额外padding */
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.banner-swiper {
+  width: 100%;
+  height: 400rpx;
+  /* 移除圆角或调整圆角，让顶部更贴合 */
+  overflow: hidden;
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.12);
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+}
+
+/* 自定义轮播指示点 */
+.banner-swiper .wx-swiper-dots {
+  bottom: 30rpx !important;
+}
+
+.banner-swiper .wx-swiper-dot {
+  width: 12rpx !important;
+  height: 12rpx !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  opacity: 0.8 !important;
+  margin: 0 6rpx !important;
+}
+
+.banner-swiper .wx-swiper-dot-active {
+  width: 36rpx !important;
+  background: #07c160 !important;
+  border-radius: 8rpx !important;
 }
 
 .teacher-scroll {
@@ -14,6 +61,7 @@
 .teacher-list {
   padding: 30rpx;
   min-height: 100%;
+  margin-top: 20rpx;
 }
 
 .teacher-card {

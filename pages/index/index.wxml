@@ -1,5 +1,38 @@
 <!--pages/index/index.wxml-->
 <view class="container">
+  <!-- 宣传图片轮播 -->
+  <view class="banner-section">
+    <swiper 
+      class="banner-swiper" 
+      indicator-dots="{{true}}" 
+      autoplay="{{true}}" 
+      interval="{{3000}}" 
+      duration="{{500}}"
+      circular="{{true}}"
+    >
+      <swiper-item>
+        <image 
+          class="banner-image" 
+          src="/images/banners/banner1.jpg" 
+          mode="aspectFill" 
+        />
+      </swiper-item>
+      <swiper-item>
+        <image 
+          class="banner-image" 
+          src="/images/banners/banner2.jpg" 
+          mode="aspectFill" 
+        />
+      </swiper-item>
+      <swiper-item>
+        <image 
+          class="banner-image" 
+          src="/images/banners/banner3.jpg" 
+          mode="aspectFill" 
+        />
+      </swiper-item>
+    </swiper>
+  </view>
   <!-- 教师列表 -->
   <scroll-view class="teacher-scroll" scroll-y>
     <view class="teacher-list">
@@ -35,7 +68,7 @@
         </block>
         
         <view wx:if="{{teachers.length === 0 && !loading}}" class="empty-state">
-          <image src="/images/empty.png" class="empty-image" />
+          <image src="/images/default-avatar.png" class="empty-image" />
           <text class="empty-text">暂无教师数据</text>
           <text class="empty-desc">快去邀请老师加入吧</text>
         </view>
