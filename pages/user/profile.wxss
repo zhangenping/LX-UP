@@ -1,6 +1,21 @@
 /* pages/user/profile.wxss */
 .page-container {
-  background: #f5f5f5;
+  /* 上半部分从左到右渐变，下半部分白色 */
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  min-height: 100vh;
+  padding: 20rpx;
+  position: relative;
+}
+
+/* 添加一个白色背景层，覆盖下半部分 */
+.page-container {
+  background: linear-gradient(
+    180deg,  /* 45度角渐变方向 */
+    #6a11cb 0%,      /* 起始颜色（左上） */
+    #2575fc 30%,     /* 中间颜色 */
+    rgba(255, 255, 255, 0.9) 60%,  /* 渐变成半透明白色 */
+    #f5f5f5 100%     /* 底部纯白色 */
+  );
   min-height: 100vh;
   padding: 20rpx;
 }
@@ -11,7 +26,9 @@
   border-radius: 20rpx;
   padding: 40rpx 30rpx;
   margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 1;
 }
 
 .user-info {
@@ -24,7 +41,7 @@
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  border: 4rpx solid #f0f0f0;
+  border: 4rpx solid rgba(255,255,255,0.8);
   margin-right: 25rpx;
 }
 
@@ -52,7 +69,12 @@
   background: #f8f9fa;
   padding: 6rpx 16rpx;
   border-radius: 20rpx;
-  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40rpx;
+  line-height: 28rpx;
+  box-sizing: border-box;
 }
 
 .student-role {
@@ -73,6 +95,12 @@
   padding: 4rpx 12rpx;
   border-radius: 20rpx;
   border: 1rpx solid #ffb74d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36rpx;
+  line-height: 24rpx;
+  box-sizing: border-box;
 }
 
 /* 已认证标识 */
@@ -83,6 +111,12 @@
   padding: 4rpx 12rpx;
   border-radius: 20rpx;
   border: 1rpx solid #07c160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36rpx;
+  line-height: 24rpx;
+  box-sizing: border-box;
 }
 
 /* 审核提示信息 */
@@ -92,6 +126,8 @@
   border-radius: 12rpx;
   padding: 20rpx;
   margin-bottom: 30rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .notice-content {
@@ -138,7 +174,9 @@
   border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 1;
 }
 
 .card-header {
@@ -201,7 +239,9 @@
   background: white;
   border-radius: 16rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 1;
 }
 
 .menu-list {
@@ -281,6 +321,10 @@
   .teacher-info-card {
     padding: 25rpx 20rpx;
   }
+  
+  .page-container::before {
+    top: 250rpx; /* 在小屏幕上减少渐变区域高度 */
+  }
 }
 
 /* 教师核销功能 */
@@ -289,7 +333,9 @@
   border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 1;
 }
 
 .section-title {
@@ -353,7 +399,9 @@
   border-radius: 20rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 1;
 }
 
 .reviews-card {
